@@ -385,9 +385,8 @@ const LandingPage = () => {
             }}>
               <ChevronRight size={22} />
             </button>
-
             {/* Slide card */}
-            <div style={{
+            <div className="feature-slide-card" style={{
               background: '#ffffff',
               borderRadius: 32,
               border: '1px solid rgba(67,24,255,0.08)',
@@ -407,7 +406,7 @@ const LandingPage = () => {
               transition: 'opacity 0.35s ease, transform 0.35s ease',
             }}>
               {/* Text Side (Left) */}
-              <div style={{
+              <div className="feature-slide-text" style={{
                 flex: 1,
                 padding: 'clamp(2rem, 4vw, 4rem)',
                 display: 'flex',
@@ -458,7 +457,7 @@ const LandingPage = () => {
               </div>
 
               {/* Image Side (Right) - Pinterest aesthetic */}
-              <div style={{
+              <div className="feature-slide-image" style={{
                 flex: 1,
                 backgroundImage: `url(${feature.image})`,
                 backgroundSize: 'cover',

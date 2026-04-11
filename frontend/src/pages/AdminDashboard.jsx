@@ -72,8 +72,8 @@ const AdminDashboard = () => {
   };
 
   return (
-    <Container className="fade-in py-4">
-      <div className="d-flex justify-content-between align-items-center mb-5 border-bottom border-light pb-3">
+    <Container className="fade-in py-4 dashboard-container-mobile">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 border-bottom border-light pb-3">
         <div>
           <h2 className="text-white fw-bold mb-0">System Analytics</h2>
           <p className="text-muted small mb-0">Platform-wide overview and SLA tracking</p>

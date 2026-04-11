@@ -276,7 +276,7 @@ const ProfilePage = () => {
       </div>
 
       {/* ── Details & About Section ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 20 }}>
+      <div className="grid-2-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 20 }}>
 
         {/* Details Card */}
         <div style={{
@@ -450,7 +450,7 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div className="grid-2-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {/* Name */}
               <div>
                 <label style={{ display: 'block', color: '#718EBF', fontSize: '0.78rem', fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Full Name</label>
@@ -563,7 +563,7 @@ const ProfilePage = () => {
               </div>
               
               {showPasswordChange && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 14 }}>
+                <div className="grid-2-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 14 }}>
                   <div>
                     <label style={{ display: 'block', color: '#718EBF', fontSize: '0.78rem', fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Current Password (Required)</label>
                     <input

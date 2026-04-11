@@ -210,7 +210,7 @@ const ComplaintTracker = () => {
   const sectionLabel = { color: 'var(--text-heading)', fontWeight: 700, fontSize: '1rem', marginBottom: '1rem' };
 
   return (
-    <Container className="fade-in py-4" style={{ maxWidth: '920px' }}>
+    <Container className="fade-in py-4 dashboard-container-mobile" style={{ maxWidth: '920px' }}>
       <div className="mb-3">
         <Link to="/dashboard" className="text-decoration-none small" style={{ color: 'var(--primary)' }}>← Back to Dashboard</Link>
       </div>
@@ -229,7 +229,7 @@ const ComplaintTracker = () => {
         {/* ── Left: Complaint Details ── */}
         <Col md={7}>
           <div style={panelStyle}>
-            <div className="d-flex justify-content-between align-items-start mb-3">
+            <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start mb-3 gap-2">
               <Badge bg={getPriorityColor(complaint.priority)} className="px-3 py-2">{complaint.priority} Priority</Badge>
               <div className="text-end">
                 <Badge bg="dark" className="text-white mb-1">{complaint.category}</Badge>
@@ -242,7 +242,7 @@ const ComplaintTracker = () => {
               {complaint.description}
             </p>
 
-            <div className="d-flex gap-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
+            <div className="d-flex flex-column flex-sm-row gap-2 gap-sm-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
               <div className="d-flex align-items-center gap-2">
                 <User size={16} style={{ color: 'var(--primary)' }} />
                 <span className="small" style={{ color: 'var(--text-muted)' }}>Raised by:</span>

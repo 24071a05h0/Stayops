@@ -313,3 +313,36 @@ p, span, div, label { color: var(--text-body); }
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
+
+/* ─── Mobile Responsiveness ─── */
+@media (max-width: 768px) {
+  /* Utility classes */
+  .hide-on-mobile { display: none !important; }
+  .show-on-mobile { display: block !important; }
+  .mobile-flex-col { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
+  .mobile-flex-col-start { flex-direction: column !important; align-items: flex-start !important; gap: 0.8rem !important; }
+  .mobile-wrap { flex-wrap: wrap !important; }
+  .mobile-text-center { text-align: center !important; }
+  
+  /* Navbar Adjustments */
+  .navbar-mobile { height: auto !important; padding: 0.5rem 1rem !important; flex-wrap: wrap !important; }
+  .navbar-brand-mobile span { font-size: 1.1rem !important; }
+  .navbar-right-mobile { gap: 8px !important; margin-top: 5px; width: 100%; justify-content: space-between; }
+  
+  /* Landing Page Slider */
+  .feature-slide-card { flex-direction: column !important; min-height: auto !important; margin: 0 0.5rem !important; border-radius: 20px !important; }
+  .feature-slide-text { padding: 1.5rem !important; }
+  .feature-slide-image { height: 200px !important; border-radius: 0 0 20px 20px !important; }
+
+  /* Dashboard Headers */
+  .dashboard-header { padding: 1.5rem 1.2rem !important; border-radius: 16px !important; flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+  
+  /* Buttons */
+  .btn-mobile-full { width: 100% !important; justify-content: center !important; }
+
+  /* Adjust Container Paddings */
+  .dashboard-container-mobile { padding: 1rem 0.5rem !important; }
+  
+  /* Grid Helper */
+  .grid-2-col { grid-template-columns: 1fr !important; }
+}

@@ -116,7 +116,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <Container className="fade-in py-4">
+    <Container className="fade-in py-4 dashboard-container-mobile">
       <div className="dashboard-header d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="fw-bold mb-1" style={{ color: '#FFFFFF' }}>My Dashboard</h2>
@@ -124,7 +124,7 @@ const StudentDashboard = () => {
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="d-flex align-items-center gap-2"
+          className="d-flex align-items-center gap-2 btn-mobile-full"
           style={{ background: 'rgba(255,255,255,0.2)', border: '1.5px solid rgba(255,255,255,0.5)', color: '#fff', borderRadius: '12px', fontWeight: 700, padding: '0.55rem 1.4rem' }}
         >
           <Plus size={18} /> New Grievance

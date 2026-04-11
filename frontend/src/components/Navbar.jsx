@@ -121,8 +121,8 @@ const Navbar = () => {
   };
 
   return (
-    <div style={{ padding: '0.8rem 1.5rem', position: 'sticky', top: 0, zIndex: 1030 }}>
-      <nav style={{
+    <div style={{ padding: '0.8rem 1.5rem', position: 'sticky', top: 0, zIndex: 1030 }} className="dashboard-container-mobile">
+      <nav className="navbar-mobile" style={{
         backgroundColor: '#FFFFFF',
         borderRadius: 12,
         padding: '0 1.5rem',
@@ -135,7 +135,7 @@ const Navbar = () => {
       }}>
 
         {/* ── Brand ── */}
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <Link to="/" className="navbar-brand-mobile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
           <Hexagon size={24} color="#4318FF" strokeWidth={2} />
           <span style={{
             fontWeight: 700,
@@ -148,7 +148,7 @@ const Navbar = () => {
         </Link>
 
         {/* ── Right side ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div className="navbar-right-mobile" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {!user ? (
             <>
               <Link to="/login" style={{
@@ -194,7 +194,7 @@ const Navbar = () => {
                   </div>
 
                   {/* Text Container */}
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div className="hide-on-mobile" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <span style={{ fontWeight: 800, color: '#1B2559', fontSize: '0.95rem', lineHeight: '1.0', letterSpacing: '-0.5px' }}>
                       {weather ? `${Math.round(weather.temperature)}°` : '...'}
                     </span>
@@ -257,7 +257,7 @@ const Navbar = () => {
               </div>
 
               {/* Dashboard link */}
-              <Link to="/dashboard" style={{
+              <Link to="/dashboard" className="hide-on-mobile" style={{
                 color: '#1B2559', fontWeight: 500, textDecoration: 'none',
                 fontSize: '0.9rem',
                 marginRight: 4
@@ -312,7 +312,7 @@ const Navbar = () => {
                   }}>
                     {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U'}
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+                  <div className="hide-on-mobile" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
                     <span style={{ fontWeight: 700, fontSize: '0.88rem', color: '#1B2559', whiteSpace: 'nowrap' }}>{user.name}</span>
                     <span style={{ fontSize: '0.68rem', color: roleColor, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{user.role}</span>
                   </div>

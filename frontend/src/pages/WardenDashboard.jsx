@@ -36,7 +36,8 @@ const WardenDashboard = () => {
     complaintList.length === 0 ? (
       <div className="text-center p-5 text-muted">{emptyMessage}</div>
     ) : (
-      <Table hover variant="dark" className="mb-0 align-middle">
+      <div className="table-responsive">
+      <Table hover variant="dark" className="mb-0 align-middle text-nowrap">
         <thead>
           <tr className="text-muted small text-uppercase">
             <th className="px-4 py-3 bg-transparent border-secondary fw-semibold">Grievance</th>
@@ -79,12 +80,13 @@ const WardenDashboard = () => {
           ))}
         </tbody>
       </Table>
+      </div>
     )
   );
 
   return (
-    <Container className="fade-in py-4">
-      <div className="d-flex justify-content-between align-items-center mb-5 border-bottom border-light pb-3">
+    <Container className="fade-in py-4 dashboard-container-mobile">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 border-bottom border-light pb-3">
         <div>
           <h2 className="text-white fw-bold mb-0">Warden Overview</h2>
           <p className="text-muted small mb-0">Monitor block activity and escalated issues</p>
