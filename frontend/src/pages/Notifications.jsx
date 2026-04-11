@@ -42,13 +42,13 @@ const Notifications = () => {
   };
 
   return (
-    <Container className="fade-in py-4" style={{ maxWidth: '800px' }}>
+    <Container className="fade-in py-4 dashboard-container-mobile" style={{ maxWidth: '800px' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <Link to="/dashboard" className="text-muted text-decoration-none small d-flex align-items-center gap-1">
           &larr; Back to Dashboard
         </Link>
       </div>
-      <div className="d-flex justify-content-between align-items-center mb-5 border-bottom border-light pb-3">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 border-bottom border-light pb-3">
         <div>
           <h2 className="text-white fw-bold mb-0">Notifications</h2>
           <p className="text-muted small mb-0">Stay updated on your complaint statuses</p>

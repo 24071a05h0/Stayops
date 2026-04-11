@@ -89,7 +89,7 @@ const WorkspacePage = () => {
   }, [noteContent]);
 
   return (
-    <Container fluid style={{ maxWidth: 1400, marginTop: '2rem' }}>
+    <Container fluid className="dashboard-container-mobile" style={{ maxWidth: 1400, marginTop: '2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '2rem' }}>
         <CheckSquare size={32} color="#4318FF" strokeWidth={2.5} />
         <h2 style={{ fontWeight: 800, color: '#1B2559', margin: 0, fontSize: '2rem' }}>Personal Workspace</h2>
@@ -111,7 +111,7 @@ const WorkspacePage = () => {
             </h4>
 
             {/* Input Form matching reference structure (Input + Add Button) */}
-            <Form onSubmit={handleAddTodo} style={{ display: 'flex', gap: '0.8rem', marginBottom: '2rem', alignItems: 'flex-start' }}>
+            <Form className="mobile-flex-col" onSubmit={handleAddTodo} style={{ display: 'flex', gap: '0.8rem', marginBottom: '2rem', alignItems: 'flex-start' }}>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <Form.Control
                   type="text"
@@ -154,8 +154,7 @@ const WorkspacePage = () => {
                 const isIncomplete = todo.status === 'Incomplete';
                 
                 return (
-                  <div key={todo._id} style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  <div key={todo._id} className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3" style={{
                     padding: '1rem 1.5rem',
                     background: isComplete ? 'rgba(34,197,94,0.04)' : isIncomplete ? 'rgba(239,68,68,0.04)' : '#ffffff',
                     border: isComplete ? '2px solid rgba(34,197,94,0.3)' : isIncomplete ? '2px solid rgba(239,68,68,0.3)' : '2px solid #E2E8F0',
@@ -179,7 +178,7 @@ const WorkspacePage = () => {
                     </div>
 
                     {/* Action Buttons styled like reference but modernized */}
-                    <div style={{ display: 'flex', gap: 10 }}>
+                    <div className="mobile-wrap w-100 mt-2 mt-md-0" style={{ display: 'flex', gap: 10, justifyContent: 'flex-start' }}>
                       <Button variant="danger" onClick={() => handleDeleteTodo(todo._id)} style={{
                         padding: '8px 16px', borderRadius: 10, fontWeight: 700, border: 'none',
                         display: 'flex', alignItems: 'center', gap: 6,

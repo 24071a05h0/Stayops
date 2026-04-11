@@ -58,8 +58,8 @@ const StaffDashboard = () => {
   };
 
   return (
-    <Container className="fade-in py-4">
-      <div className="d-flex justify-content-between align-items-center mb-5 border-bottom border-light pb-3">
+    <Container className="fade-in py-4 dashboard-container-mobile">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 border-bottom border-light pb-3">
         <div>
           <h2 className="text-white fw-bold mb-0">Staff Operations</h2>
           <p className="text-muted small mb-0">Manage and resolve assigned complaints</p>
@@ -99,7 +99,7 @@ const StaffDashboard = () => {
             <div className="text-center p-5 text-muted">No assigned complaints. Good job!</div>
           ) : (
             <div className="table-responsive">
-              <Table hover variant="dark" className="mb-0 align-middle">
+              <Table hover variant="dark" className="mb-0 align-middle text-nowrap">
                 <thead>
                   <tr className="text-muted small text-uppercase">
                     <th className="px-4 py-3 bg-transparent border-secondary fw-semibold">Task</th>
