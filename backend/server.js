@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import complaintRoutes from './routes/complaintRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import workspaceRoutes from './routes/workspaceRoutes.js';
 import { startCronJobs } from './utils/cronJobs.js';
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/workspace', workspaceRoutes);
 
 // Start Cron Jobs
 startCronJobs();

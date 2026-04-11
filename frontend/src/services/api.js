@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -19,7 +19,27 @@ export const authService = {
   register: (data) => api.post('/auth/register', data),
   getMe: () => api.get('/auth/me'),
   getStaff: () => api.get('/auth/staff'),
-  updateProfile: (data) => api.put('/auth/profile', data),
+  updateProfile: (data) => {
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+      if (data[key] !== undefined && data[key] !== null && key !== 'profilePictureFile') {
+        if ((key === 'password' || key === 'oldPassword') && data[key] === '') {
+          // Skip empty password fields
+        } else {
+          formData.append(key, data[key]);
+        }
+      }
+    });
+    if (data.profilePictureFile) {
+      formData.append('profilePicture', data.profilePictureFile);
+    }
+    return api.put('/auth/profile', formData);
+  },
+  uploadProfilePicture: (file) => {
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+    return api.post('/auth/profile-picture', formData);
+  },
 };
 
 export const complaintService = {
