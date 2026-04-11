@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Modal, Form, Button } from 'react-bootstrap';
-import api, { notificationService, authService } from '../services/api';
-import { Hexagon, LogOut, Bell, Sun, Cloud, CloudRain, Settings } from 'lucide-react';
+import api, { notificationService } from '../services/api';
+import { Hexagon, LogOut, Bell, Sun, Cloud, CloudRain, Settings, User, ChevronDown, ClipboardList } from 'lucide-react';
 
 const ROLE_COLOR = {
   'Warden': '#f59e0b',
@@ -13,28 +12,15 @@ const ROLE_COLOR = {
 };
 
 const Navbar = () => {
-  const { user, logout, updateUser } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Profile Modal
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [profileData, setProfileData] = useState({ name: '', email: '', oldPassword: '', password: '', roomNumber: '', block: '' });
-  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  // User dropdown
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const userDropdownRef = useRef(null);
 
-  useEffect(() => {
-    if (user && showProfileModal) {
-      setProfileData({
-        name: user.name || '',
-        email: user.email || '',
-        oldPassword: '',
-        password: '', // Kept empty for security
-        roomNumber: user.roomNumber || '',
-        block: user.block || ''
-      });
-    }
-  }, [user, showProfileModal]);
   const [weather, setWeather] = useState(null);
   const [weatherLocationName, setWeatherLocationName] = useState('Local');
   const [isWeatherOpen, setIsWeatherOpen] = useState(false);
@@ -49,6 +35,9 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (weatherRef.current && !weatherRef.current.contains(event.target)) {
         setIsWeatherOpen(false);
+      }
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setIsUserDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -122,31 +111,6 @@ const Navbar = () => {
   };
 
   const handleLogout = () => { logout(); navigate('/login'); };
-
-  const handleDeleteAccount = async () => {
-    if (!window.confirm('Permanently delete your account? This cannot be undone.')) return;
-    try {
-      await api.delete('/auth/me');
-      logout(); navigate('/');
-    } catch (err) {
-      alert('Failed to delete account: ' + (err.response?.data?.message || err.message));
-    }
-  };
-
-  const handleProfileUpdate = async (e) => {
-    e.preventDefault();
-    setIsUpdatingProfile(true);
-    try {
-      const { data } = await authService.updateProfile(profileData);
-      updateUser(data);
-      setShowProfileModal(false);
-      alert('Profile updated successfully!');
-    } catch (err) {
-      alert('Failed to update profile: ' + (err.response?.data?.message || err.message));
-    } finally {
-      setIsUpdatingProfile(false);
-    }
-  };
 
   const roleColor = user ? (ROLE_COLOR[user.role] || '#4318FF') : '#4318FF';
 
@@ -267,7 +231,16 @@ const Navbar = () => {
                     </form>
                     
                     {searchedWeather && (
-                      <div style={{ marginTop: 12, padding: '10px 12px', background: 'rgba(67,24,255,0.04)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div
+                        onClick={() => {
+                          setWeather(searchedWeather);
+                          setWeatherLocationName(searchedLocationName);
+                          setIsWeatherOpen(false);
+                          setSearchQuery('');
+                          setSearchedWeather(null);
+                        }}
+                        style={{ marginTop: 12, padding: '10px 12px', background: 'rgba(67,24,255,0.04)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+                      >
                         <div>
                           <div style={{ fontWeight: 700, color: '#1B2559', fontSize: '1.1rem' }}>
                             {Math.round(searchedWeather.temperature)}°C
@@ -312,116 +285,135 @@ const Navbar = () => {
               {/* Divider */}
               <div style={{ width: 1, height: 28, background: 'rgba(0,0,0,0.06)', margin: '0 2px' }} />
 
-              {/* Role badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.9rem', marginLeft: 8 }}>
-                <span style={{ color: '#718EBF' }}>Role:</span>
-                <span style={{ color: roleColor, fontWeight: 700 }}>{user.role}</span>
+              {/* ── User Avatar Dropdown ── */}
+              <div style={{ position: 'relative' }} ref={userDropdownRef}>
+                <div
+                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: '4px 10px 4px 4px',
+                    borderRadius: 40,
+                    background: isUserDropdownOpen ? 'linear-gradient(145deg, rgba(67,24,255,0.06), rgba(123,95,255,0.02))' : 'transparent',
+                    border: isUserDropdownOpen ? '1px solid rgba(67,24,255,0.15)' : '1px solid transparent',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    marginLeft: 6
+                  }}
+                >
+                  {/* Avatar circle */}
+                  <div style={{
+                    width: 36, height: 36, borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${roleColor}, ${roleColor}88)`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', fontWeight: 800, fontSize: '0.85rem',
+                    letterSpacing: '0.5px',
+                    boxShadow: `0 2px 8px ${roleColor}40`,
+                    flexShrink: 0
+                  }}>
+                    {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U'}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.88rem', color: '#1B2559', whiteSpace: 'nowrap' }}>{user.name}</span>
+                    <span style={{ fontSize: '0.68rem', color: roleColor, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{user.role}</span>
+                  </div>
+                  <ChevronDown size={14} color="#718EBF" style={{ transition: 'transform 0.3s ease', transform: isUserDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                </div>
+
+                {/* Dropdown menu */}
+                {isUserDropdownOpen && (
+                  <div style={{
+                    position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                    background: '#fff', borderRadius: 14,
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.12), 0 2px 10px rgba(0,0,0,0.06)',
+                    border: '1px solid rgba(226, 232, 248, 0.8)',
+                    width: 220, zIndex: 1050,
+                    padding: '8px 0',
+                    animation: 'dropdownFadeIn 0.2s ease'
+                  }}>
+                    {/* User info header */}
+                    <div style={{ padding: '12px 16px 10px', borderBottom: '1px solid rgba(226,232,248,0.6)' }}>
+                      <div style={{ fontWeight: 700, color: '#1B2559', fontSize: '0.9rem' }}>{user.name}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#718EBF', marginTop: 2 }}>{user.email}</div>
+                    </div>
+
+                    {/* Menu items */}
+                    <div style={{ padding: '6px 0' }}>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); navigate('/profile'); }}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          width: '100%', padding: '10px 16px',
+                          background: 'transparent', border: 'none',
+                          color: '#1B2559', fontSize: '0.88rem', fontWeight: 500,
+                          cursor: 'pointer', transition: 'background 0.15s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <User size={16} color="#718EBF" /> View Profile
+                      </button>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); navigate('/workspace'); }}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          width: '100%', padding: '10px 16px',
+                          background: 'transparent', border: 'none',
+                          color: '#1B2559', fontSize: '0.88rem', fontWeight: 500,
+                          cursor: 'pointer', transition: 'background 0.15s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <ClipboardList size={16} color="#718EBF" /> To-Do & Notes
+                      </button>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); navigate('/dashboard'); }}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          width: '100%', padding: '10px 16px',
+                          background: 'transparent', border: 'none',
+                          color: '#1B2559', fontSize: '0.88rem', fontWeight: 500,
+                          cursor: 'pointer', transition: 'background 0.15s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <Settings size={16} color="#718EBF" /> Dashboard
+                      </button>
+                    </div>
+
+                    {/* Logout */}
+                    <div style={{ borderTop: '1px solid rgba(226,232,248,0.6)', padding: '6px 0 2px' }}>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); handleLogout(); }}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          width: '100%', padding: '10px 16px',
+                          background: 'transparent', border: 'none',
+                          color: '#ef4444', fontSize: '0.88rem', fontWeight: 600,
+                          cursor: 'pointer', transition: 'background 0.15s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <LogOut size={16} color="#ef4444" style={{ transform: 'scaleX(-1)' }} /> Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {/* User name / Profile Edit Trigger */}
-              <span 
-                onClick={() => setShowProfileModal(true)}
-                title="Edit Profile"
-                style={{
-                  fontWeight: 700,
-                  fontSize: '0.95rem',
-                  color: '#1B2559',
-                  cursor: 'pointer',
-                  padding: '4px 10px',
-                  marginLeft: 4,
-                  borderRadius: '6px',
-                  transition: 'background 0.2s',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.08)'}
-                onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-              >
-                {user.name}
-              </span>
-
-              {/* Logout */}
-              <button onClick={handleLogout} style={{
-                background: 'transparent',
-                border: '1.5px solid rgba(239,68,68,0.5)',
-                color: '#ef4444',
-                borderRadius: 6,
-                padding: '4px 10px',
-                fontWeight: 500,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-                marginLeft: 4
-              }}>
-                <LogOut size={16} strokeWidth={1.8} style={{transform: 'scaleX(-1)'}} /> Logout
-              </button>
-
-              {/* Delete account */}
-              <button onClick={handleDeleteAccount} style={{
-                background: '#ef4444',
-                border: 'none',
-                color: '#ffffff',
-                borderRadius: 6,
-                padding: '6px 14px',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-              }}>
-                Delete Account
-              </button>
             </>
           )}
         </div>
       </nav>
 
-      <Modal show={showProfileModal} onHide={() => setShowProfileModal(false)} centered>
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title style={{ color: '#1B2559', fontWeight: 700 }}>Edit Profile</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-4">
-          <Form onSubmit={handleProfileUpdate}>
-            <Form.Group className="mb-3">
-              <Form.Label>Full Name</Form.Label>
-              <Form.Control type="text" required value={profileData.name} onChange={e => setProfileData({...profileData, name: e.target.value})} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control type="email" required value={profileData.email} onChange={e => setProfileData({...profileData, email: e.target.value})} />
-            </Form.Group>
-            <div className="p-3 mb-4 rounded" style={{ background: 'rgba(0,0,0,0.02)', border: '1px solid rgba(0,0,0,0.05)' }}>
-              <div className="fw-semibold mb-3" style={{ color: '#1B2559', fontSize: '0.9rem' }}>Security</div>
-              <Form.Group className="mb-3">
-                <Form.Label style={{ fontSize: '0.85rem' }}>Current Password</Form.Label>
-                <Form.Control type="password" placeholder="Required if changing password" value={profileData.oldPassword} onChange={e => setProfileData({...profileData, oldPassword: e.target.value})} />
-              </Form.Group>
-              <Form.Group className="mb-1">
-                <Form.Label style={{ fontSize: '0.85rem' }}>New Password</Form.Label>
-                <Form.Control type="password" placeholder="Leave blank to keep current password" value={profileData.password} onChange={e => setProfileData({...profileData, password: e.target.value})} />
-              </Form.Group>
-            </div>
-            {user?.role === 'Student' && (
-              <div className="d-flex gap-3 mb-4">
-                <Form.Group style={{ flex: 1 }}>
-                  <Form.Label>Room Number</Form.Label>
-                  <Form.Control type="text" value={profileData.roomNumber} onChange={e => setProfileData({...profileData, roomNumber: e.target.value})} />
-                </Form.Group>
-                <Form.Group style={{ flex: 1 }}>
-                   <Form.Label>Block</Form.Label>
-                   <Form.Control type="text" value={profileData.block} onChange={e => setProfileData({...profileData, block: e.target.value})} />
-                </Form.Group>
-              </div>
-            )}
-            <div className="d-flex justify-content-end gap-2 mt-4">
-              <Button variant="outline-secondary" onClick={() => setShowProfileModal(false)} style={{ borderRadius: 10 }}>Cancel</Button>
-              <Button variant="primary" type="submit" disabled={isUpdatingProfile} style={{ background: '#4318FF', border: 'none', borderRadius: 10 }}>
-                {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      {/* Dropdown animation style */}
+      <style>{`
+        @keyframes dropdownFadeIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
     </div>
   );

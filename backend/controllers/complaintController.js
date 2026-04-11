@@ -30,7 +30,16 @@ export const createComplaint = async (req, res) => {
       image: imagePath
     });
 
-    // Create Notification
+    // Create Notifications for Wardens
+    const wardens = await User.find({ role: 'Warden' });
+    for (const warden of wardens) {
+      await Notification.create({
+        userId: warden._id,
+        message: `New ${priority} priority complaint registered: "${title}"`,
+        relatedComplaintId: complaint._id
+      });
+    }
+
     if (assignedStaff) {
       await Notification.create({
         userId: assignedStaff,

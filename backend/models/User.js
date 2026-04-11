@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['Student', 'Staff', 'Warden', 'Admin'], default: 'Student' },
   roomNumber: { type: String },
   block: { type: String },
+  hostelName: { type: String },
+  profilePicture: { type: String },
 }, { timestamps: true });
 
 userSchema.pre('save', async function() {
