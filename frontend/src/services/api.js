@@ -1,11 +1,13 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// 🔥 IMPORTANT: NO /api here
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({
   baseURL: API_URL,
 });
 
+// Attach token automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -14,49 +16,58 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// ================= AUTH =================
 export const authService = {
-  login: (data) => api.post('/auth/login', data),
-  register: (data) => api.post('/auth/register', data),
-  getMe: () => api.get('/auth/me'),
-  getStaff: () => api.get('/auth/staff'),
+  login: (data) => api.post('/api/auth/login', data),
+  register: (data) => api.post('/api/auth/register', data),
+  getMe: () => api.get('/api/auth/me'),
+  getStaff: () => api.get('/api/auth/staff'),
+
   updateProfile: (data) => {
     const formData = new FormData();
+
     Object.keys(data).forEach(key => {
       if (data[key] !== undefined && data[key] !== null && key !== 'profilePictureFile') {
         if ((key === 'password' || key === 'oldPassword') && data[key] === '') {
-          // Skip empty password fields
+          // skip empty password
         } else {
           formData.append(key, data[key]);
         }
       }
     });
+
     if (data.profilePictureFile) {
       formData.append('profilePicture', data.profilePictureFile);
     }
-    return api.put('/auth/profile', formData);
+
+    return api.put('/api/auth/profile', formData);
   },
+
   uploadProfilePicture: (file) => {
     const formData = new FormData();
     formData.append('profilePicture', file);
-    return api.post('/auth/profile-picture', formData);
+    return api.post('/api/auth/profile-picture', formData);
   },
 };
 
+// ================= COMPLAINTS =================
 export const complaintService = {
-  getAll: () => api.get('/complaints'),
-  getById: (id) => api.get(`/complaints/${id}`),
-  create: (data) => api.post('/complaints', data),
-  updateStatus: (id, data) => api.put(`/complaints/${id}`, data),
+  getAll: () => api.get('/api/complaints'),
+  getById: (id) => api.get(`/api/complaints/${id}`),
+  create: (data) => api.post('/api/complaints', data),
+  updateStatus: (id, data) => api.put(`/api/complaints/${id}`, data),
 };
 
+// ================= ANALYTICS =================
 export const analyticsService = {
-  getAnalytics: () => api.get('/analytics'),
+  getAnalytics: () => api.get('/api/analytics'),
 };
 
+// ================= NOTIFICATIONS =================
 export const notificationService = {
-  getAll: () => api.get('/notifications'),
-  markAsRead: (id) => api.put(`/notifications/${id}`),
-  markAllAsRead: () => api.put('/notifications/read-all'),
+  getAll: () => api.get('/api/notifications'),
+  markAsRead: (id) => api.put(`/api/notifications/${id}`),
+  markAllAsRead: () => api.put('/api/notifications/read-all'),
 };
 
 export default api;
