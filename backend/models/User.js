@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   roomNumber: { type: String },
   block: { type: String },
   hostelName: { type: String },
+  phone: { type: String },
   profilePicture: { type: String },
 }, { timestamps: true });
 

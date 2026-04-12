@@ -30,11 +30,19 @@ export const createComplaint = async (req, res) => {
       image: imagePath
     });
 
-    // Create Notifications for Wardens
+    // Create Notifications for Wardens and Admins
     const wardens = await User.find({ role: 'Warden' });
+    const admins = await User.find({ role: 'Admin' });
     for (const warden of wardens) {
       await Notification.create({
         userId: warden._id,
+        message: `New ${priority} priority complaint registered: "${title}"`,
+        relatedComplaintId: complaint._id
+      });
+    }
+    for (const admin of admins) {
+      await Notification.create({
+        userId: admin._id,
         message: `New ${priority} priority complaint registered: "${title}"`,
         relatedComplaintId: complaint._id
       });
@@ -161,12 +169,20 @@ export const updateComplaintStatus = async (req, res) => {
         if (req.user.role !== 'Student') {
           return res.status(403).json({ message: 'Only the student can reopen a complaint.' });
         }
-        // Notify warden
+      // Notify warden and admins about reopen
         const wardens = await User.find({ role: 'Warden' });
+        const adminsForReopen = await User.find({ role: 'Admin' });
         for (const w of wardens) {
           await Notification.create({
             userId: w._id,
             message: `Student rejected resolution for "${complaint.title}" — please review and reassign.`,
+            relatedComplaintId: complaint._id
+          });
+        }
+        for (const a of adminsForReopen) {
+          await Notification.create({
+            userId: a._id,
+            message: `Student rejected resolution for "${complaint.title}" — complaint reopened.`,
             relatedComplaintId: complaint._id
           });
         }
@@ -199,6 +215,18 @@ export const updateComplaintStatus = async (req, res) => {
         message: msg,
         relatedComplaintId: complaint._id
       });
+
+      // Notify all Admins about every status update
+      const adminsForUpdate = await User.find({ role: 'Admin' });
+      for (const admin of adminsForUpdate) {
+        // Skip if the admin is the one making the change
+        if (admin._id.toString() === req.user._id.toString()) continue;
+        await Notification.create({
+          userId: admin._id,
+          message: `Complaint "${complaint.title}" status updated to ${status}`,
+          relatedComplaintId: complaint._id
+        });
+      }
     }
 
     await complaint.save();

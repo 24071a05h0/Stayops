@@ -228,12 +228,11 @@ const LandingPage = () => {
           margin: '0 auto 1.2rem',
           color: '#1B2559',
         }}>
-          Smart Hostel{' '}
           <span style={{
             background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-          }}>Operations</span>
+          }}>StayOps</span>{' '}— Smart Hostel Operations
         </h1>
 
         <p style={{
@@ -243,9 +242,9 @@ const LandingPage = () => {
           margin: '0 auto 2.5rem',
           lineHeight: 1.7,
         }}>
-          Next-generation intelligent operations system with AI automation,
-          accountability tracking, and smart SLA analytics —{' '}
-          <strong style={{ color: '#4318FF' }}>built for modern hostels.</strong>
+          The complete grievance management platform for your hostel — AI automation,
+          accountability tracking, and smart SLA analytics.{' '}
+          <strong style={{ color: '#4318FF' }}>Built for modern hostels.</strong>
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -595,10 +594,10 @@ const LandingPage = () => {
           Who Uses StayOps
         </div>
         <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 800, color: '#1B2559', marginBottom: '0.3rem' }}>
-          Built for <span style={{ color: '#4318FF' }}>every role</span>
+          Built for <span style={{ color: '#4318FF' }}>every role</span> in your hostel
         </h2>
-        <p style={{ color: '#718EBF', maxWidth: 500, margin: '0 auto 3rem' }}>
-          Tailored views and tools for each stakeholder in your hostel
+        <p style={{ color: '#718EBF', maxWidth: 550, margin: '0 auto 3rem' }}>
+          Whether it's your hostel warden, maintenance staff, or students — StayOps gives each stakeholder tailored tools and dashboards.
         </p>
 
         <Row className="g-4 justify-content-center" style={{ maxWidth: 1000, margin: '0 auto' }}>
