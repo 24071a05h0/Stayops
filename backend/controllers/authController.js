@@ -13,6 +13,7 @@ const userFields = (user, token) => ({
   roomNumber: user.roomNumber,
   block: user.block,
   hostelName: user.hostelName,
+  phone: user.phone,
   profilePicture: user.profilePicture,
   createdAt: user.createdAt,
   ...(token && { token })
@@ -20,7 +21,7 @@ const userFields = (user, token) => ({
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role, roomNumber, block, hostelName } = req.body;
+    const { name, email, password, role, roomNumber, block, hostelName, phone } = req.body;
     
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -28,7 +29,7 @@ export const register = async (req, res) => {
     }
 
     const user = await User.create({
-      name, email, password, role, roomNumber, block, hostelName
+      name, email, password, role, roomNumber, block, hostelName, phone
     });
 
     res.status(201).json(userFields(user, generateToken(user._id)));
@@ -68,7 +69,7 @@ export const updateProfile = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const { name, email, roomNumber, block, hostelName, password, oldPassword } = req.body;
+    const { name, email, roomNumber, block, hostelName, phone, password, oldPassword } = req.body;
 
     if (email && email !== user.email) {
       const emailExists = await User.findOne({ email });
@@ -93,6 +94,7 @@ export const updateProfile = async (req, res) => {
     if (roomNumber !== undefined) user.roomNumber = roomNumber;
     if (block !== undefined) user.block = block;
     if (hostelName !== undefined) user.hostelName = hostelName;
+    if (phone !== undefined) user.phone = phone;
 
     // Handle profile picture from multer
     if (req.file) {

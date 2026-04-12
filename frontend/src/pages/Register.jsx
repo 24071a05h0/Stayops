@@ -8,7 +8,7 @@ const Register = () => {
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ 
-    name: '', email: '', password: '', role: 'Student', roomNumber: '', block: 'A' 
+    name: '', email: '', password: '', role: 'Student', roomNumber: '', block: 'A', hostelName: '', phone: ''
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const Register = () => {
         <div className="text-center mb-4">
           <UserPlus size={40} className="text-primary mb-2" />
           <h2 className="fw-bold text-white">Join StayOps</h2>
-          <p className="text-muted small">Create your account to manage operations</p>
+          <p className="text-muted small">Create your account to manage hostel operations</p>
         </div>
         
         {error && <Alert variant="danger" className="py-2 border-0 bg-danger text-white bg-opacity-25">{error}</Alert>}
@@ -46,6 +46,7 @@ const Register = () => {
                 <Form.Control 
                   type="text" 
                   required
+                  placeholder="Your full name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
@@ -57,6 +58,7 @@ const Register = () => {
                 <Form.Control 
                   type="email" 
                   required
+                  placeholder="you@email.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -71,8 +73,36 @@ const Register = () => {
                 <Form.Control 
                   type="password" 
                   required
+                  placeholder="Create a password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-light small fw-semibold">Phone Number</Form.Label>
+                <Form.Control 
+                  type="tel" 
+                  required
+                  placeholder="e.g. 9876543210"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className="text-light small fw-semibold">Hostel Name</Form.Label>
+                <Form.Control 
+                  type="text" 
+                  required
+                  placeholder="e.g. Krishna Hostel"
+                  value={formData.hostelName}
+                  onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
                 />
               </Form.Group>
             </Col>
@@ -100,6 +130,7 @@ const Register = () => {
                   <Form.Control 
                     type="text" 
                     required={formData.role === 'Student'}
+                    placeholder="e.g. A-101"
                     value={formData.roomNumber}
                     onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
                   />
