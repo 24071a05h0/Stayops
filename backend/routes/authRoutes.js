@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import { register, login, getMe, deleteMe, getStaff, updateProfile, uploadProfilePicture } from '../controllers/authController.js';
+import { register, login, getMe, deleteMe, getStaff, updateProfile, uploadProfilePicture, getAvailableHostels } from '../controllers/authController.js';
 import { protect, authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -13,6 +13,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
+router.get('/hostels', getAvailableHostels); // Make this public so registration page can access it before login
 router.post('/register', register);
 router.post('/login', login);
 router.get('/me', protect, getMe);

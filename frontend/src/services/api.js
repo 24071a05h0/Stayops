@@ -20,6 +20,7 @@ api.interceptors.request.use((config) => {
 export const authService = {
   login: (data) => api.post('/api/auth/login', data),
   register: (data) => api.post('/api/auth/register', data),
+  getAvailableHostels: () => api.get('/api/auth/hostels'),
   getMe: () => api.get('/api/auth/me'),
   getStaff: () => api.get('/api/auth/staff'),
 

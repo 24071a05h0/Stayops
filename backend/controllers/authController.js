@@ -54,6 +54,16 @@ export const login = async (req, res) => {
   }
 };
 
+export const getAvailableHostels = async (req, res) => {
+  try {
+    const hostels = await User.find({ role: 'Warden' }).distinct('hostelName');
+    // Filter out any potential empty or null values
+    res.json(hostels.filter(h => h && h.trim() !== ''));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');

@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
-import { Container, Form, Button, Card, Alert, Row, Col, InputGroup } from 'react-bootstrap';
+import React, { useState, useContext, useEffect } from 'react';
+import { Container, Form, Button, Card,Alert, Row, Col, InputGroup } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
+import { authService } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, Eye, EyeOff } from 'lucide-react';
 
@@ -13,6 +14,19 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [availableHostels, setAvailableHostels] = useState([]);
+
+  useEffect(() => {
+    const fetchHostels = async () => {
+      try {
+        const { data } = await authService.getAvailableHostels();
+        setAvailableHostels(data);
+      } catch (err) {
+        console.error('Failed to fetch available hostels', err);
+      }
+    };
+    fetchHostels();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -113,19 +127,26 @@ const Register = () => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="text-light small fw-semibold">Hostel Name</Form.Label>
-                <Form.Select 
-                  required
-                  value={formData.hostelName}
-                  onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
-                >
-                  <option value="">Select a Hostel</option>
-                  <option value="Sree Venkateswara Hostel">Sree Venkateswara Hostel</option>
-                  <option value="Krishna Hostel">Krishna Hostel</option>
-                  <option value="Godavari Hostel">Godavari Hostel</option>
-                  <option value="Kaveri Hostel">Kaveri Hostel</option>
-                  <option value="Narmada Hostel">Narmada Hostel</option>
-                  <option value="Yamuna Hostel">Yamuna Hostel</option>
-                </Form.Select>
+                {formData.role === 'Warden' ? (
+                  <Form.Control 
+                    type="text" 
+                    required
+                    placeholder="Enter new hostel name"
+                    value={formData.hostelName}
+                    onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
+                  />
+                ) : (
+                  <Form.Select 
+                    required
+                    value={formData.hostelName}
+                    onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
+                  >
+                    <option value="">Select a Hostel</option>
+                    {availableHostels.map((hostel, i) => (
+                      <option key={i} value={hostel}>{hostel}</option>
+                    ))}
+                  </Form.Select>
+                )}
               </Form.Group>
             </Col>
             <Col md={6}>
