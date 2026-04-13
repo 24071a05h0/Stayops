@@ -22,10 +22,10 @@ const WorkspacePage = () => {
 
   const fetchWorkspaceData = async () => {
     try {
-      const todoRes = await api.get('/workspace/todos');
+      const todoRes = await api.get('/api/workspace/todos');
       setTodos(todoRes.data);
 
-      const noteRes = await api.get('/workspace/note');
+      const noteRes = await api.get('/api/workspace/note');
       if (noteRes.data) {
         setNoteContent(noteRes.data.content);
       }
@@ -40,7 +40,7 @@ const WorkspacePage = () => {
     e.preventDefault();
     if (!taskInput.trim()) return;
     try {
-      const res = await api.post('/workspace/todos', {
+      const res = await api.post('/api/workspace/todos', {
         task: taskInput,
         repairCost: costInput || 0
       });
@@ -54,7 +54,7 @@ const WorkspacePage = () => {
 
   const handleUpdateTodoStatus = async (id, status) => {
     try {
-      const res = await api.put(`/workspace/todos/${id}`, { status });
+      const res = await api.put(`/api/workspace/todos/${id}`, { status });
       setTodos(todos.map(t => t._id === id ? res.data : t));
     } catch (error) {
       console.error('Error updating todo status', error);
@@ -63,7 +63,7 @@ const WorkspacePage = () => {
 
   const handleDeleteTodo = async (id) => {
     try {
-      await api.delete(`/workspace/todos/${id}`);
+      await api.delete(`/api/workspace/todos/${id}`);
       setTodos(todos.filter(t => t._id !== id));
     } catch (error) {
       console.error('Error deleting todo', error);
@@ -77,7 +77,7 @@ const WorkspacePage = () => {
     const delayDebounceFn = setTimeout(async () => {
       setIsSavingNote(true);
       try {
-        await api.put('/workspace/note', { content: noteContent });
+        await api.put('/api/workspace/note', { content: noteContent });
       } catch (error) {
         console.error('Error saving note', error);
       } finally {

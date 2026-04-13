@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import CursorEffect from './components/CursorEffect';
+import FeedbackWidget from './components/FeedbackWidget';
+import Footer from './components/Footer';
 
 // Pages to create later
 import LandingPage from './pages/LandingPage';
@@ -26,6 +28,7 @@ const AppContent = () => {
     <div className="d-flex flex-column min-vh-100 position-relative z-1">
       <CursorEffect />
       <Navbar />
+      <FeedbackWidget />
       {isLanding ? (
         <main className="flex-grow-1 pb-5 position-relative z-1" style={{ maxWidth: 1200, margin: '0 auto', width: '100%', padding: '0 1rem' }}>
           <Routes>
@@ -52,6 +55,7 @@ const AppContent = () => {
           </Routes>
         </main>
       )}
+      <Footer />
     </div>
   );
 };

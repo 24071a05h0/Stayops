@@ -229,16 +229,27 @@ const StudentDashboard = () => {
                         {getStatusLabel(c.status)}
                       </span>
                     </div>
-                    {/* Prompt student to act when staff has fixed */}
-                    {needsAction(c.status) && (
-                      <Link
-                        to={`/complaint/${c._id}`}
-                        className="btn btn-sm w-100 mt-2 fw-semibold"
-                        style={{ background: '#4318FF', color: '#fff', borderRadius: 10, fontSize: '0.82rem' }}
-                      >
-                        👆 View Fix & Respond
-                      </Link>
-                    )}
+                    {/* Allow student to view complaint details at all times */}
+                    <Link
+                      to={`/complaint/${c._id}`}
+                      className="btn btn-sm w-100 mt-3 fw-semibold"
+                      style={{ 
+                        background: needsAction(c.status) ? '#4318FF' : 'rgba(67, 24, 255, 0.08)', 
+                        color: needsAction(c.status) ? '#fff' : '#4318FF', 
+                        borderRadius: 10, 
+                        fontSize: '0.8rem',
+                        transition: 'background 0.2s',
+                        border: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!needsAction(c.status)) e.currentTarget.style.background = 'rgba(67, 24, 255, 0.15)';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!needsAction(c.status)) e.currentTarget.style.background = 'rgba(67, 24, 255, 0.08)';
+                      }}
+                    >
+                      {needsAction(c.status) ? '👆 View Fix & Respond' : 'View Details & Timeline'}
+                    </Link>
                   </div>
                 </Card.Body>
               </Card>

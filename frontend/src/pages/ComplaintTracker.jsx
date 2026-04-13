@@ -109,9 +109,13 @@ const ComplaintTracker = () => {
 
   useEffect(() => {
     if (!complaint) return;
-    if (complaint.slaDeadline && !['Resolved', 'Rejected'].includes(complaint.status)) {
+    if (!['Resolved', 'Rejected'].includes(complaint.status)) {
+      // Calculate dynamic SLA deadline based on role (48h for staff, 24h for others)
+      const hoursGiven = user?.role === 'Staff' ? 48 : 24;
+      const customDeadline = new Date(complaint.createdAt).getTime() + (hoursGiven * 60 * 60 * 1000);
+
       const timer = setInterval(() => {
-        const dist = new Date(complaint.slaDeadline).getTime() - Date.now();
+        const dist = customDeadline - Date.now();
         if (dist < 0) { clearInterval(timer); setTimeLeft('SLA Breached'); return; }
         const h = Math.floor(dist / 3600000);
         const m = Math.floor((dist % 3600000) / 60000);
@@ -259,25 +263,25 @@ const ComplaintTracker = () => {
             {complaint.image && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: 'var(--text-heading)' }}>📷 Issue Photo</div>
-                <img src={`http://localhost:5000/${complaint.image}`} alt="Issue" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '1px solid var(--border-light)' }} className="img-fluid" />
+                <img src={`http://localhost:5000/${complaint.image.replace(/\\/g, '/')}`} alt="Issue" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '1px solid var(--border-light)' }} className="img-fluid" />
               </div>
             )}
             {complaint.resolutionImage && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: '#22c55e' }}>✅ Staff Resolution Photo</div>
-                <img src={`http://localhost:5000/${complaint.resolutionImage}`} alt="Resolution" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #22c55e40' }} className="img-fluid" />
+                <img src={`http://localhost:5000/${complaint.resolutionImage.replace(/\\/g, '/')}`} alt="Resolution" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #22c55e40' }} className="img-fluid" />
               </div>
             )}
             {complaint.verifyImage && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: '#8b5cf6' }}>✔️ Student Confirmation Photo</div>
-                <img src={`http://localhost:5000/${complaint.verifyImage}`} alt="Verify" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #8b5cf640' }} className="img-fluid" />
+                <img src={`http://localhost:5000/${complaint.verifyImage.replace(/\\/g, '/')}`} alt="Verify" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #8b5cf640' }} className="img-fluid" />
               </div>
             )}
             {complaint.reopenImage && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: '#ef4444' }}>⚠️ Problem Continues Photo</div>
-                <img src={`http://localhost:5000/${complaint.reopenImage}`} alt="Reopen" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #ef444440' }} className="img-fluid" />
+                <img src={`http://localhost:5000/${complaint.reopenImage.replace(/\\/g, '/')}`} alt="Reopen" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #ef444440' }} className="img-fluid" />
               </div>
             )}
           </div>
@@ -291,8 +295,10 @@ const ComplaintTracker = () => {
             <Clock size={32} style={{ color: timeLeft === 'SLA Breached' ? '#ef4444' : 'var(--primary)', marginBottom: 8 }} />
             <div className="small fw-bold text-uppercase mb-1" style={{ color: 'var(--text-muted)', letterSpacing: 1 }}>SLA Countdown</div>
             <div className="fw-bolder" style={{ fontSize: '1.4rem', color: timeLeft === 'SLA Breached' ? '#ef4444' : 'var(--text-heading)' }}>{timeLeft}</div>
-            {complaint.slaDeadline && !isFinal && (
-              <div className="small mt-1" style={{ color: 'var(--text-muted)' }}>Deadline: {new Date(complaint.slaDeadline).toLocaleString()}</div>
+            {!isFinal && (
+              <div className="small mt-1" style={{ color: 'var(--text-muted)' }}>
+                Deadline: {new Date(new Date(complaint.createdAt).getTime() + ((user?.role === 'Staff' ? 48 : 24) * 60 * 60 * 1000)).toLocaleString()}
+              </div>
             )}
           </div>
 

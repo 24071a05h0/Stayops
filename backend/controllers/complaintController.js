@@ -31,7 +31,7 @@ export const createComplaint = async (req, res) => {
     });
 
     // Create Notifications for Wardens and Admins
-    const wardens = await User.find({ role: 'Warden' });
+    const wardens = await User.find({ role: 'Warden', hostelName: req.user.hostelName });
     const admins = await User.find({ role: 'Admin' });
     for (const warden of wardens) {
       await Notification.create({
@@ -70,8 +70,10 @@ export const getComplaints = async (req, res) => {
     } else if (req.user.role === 'Staff') {
       query.assignedTo = req.user._id; // Only show explicitly assigned ones
     } else if (req.user.role === 'Warden') {
-      // Wardens should see all complaints for monitoring, not just escalated
-      query = {}; // Warden sees all inside their block ideally, but for MVP we show all
+      // Warden sees all complaints within their hostel
+      const studentsInHostel = await User.find({ hostelName: req.user.hostelName }).select('_id');
+      const studentIds = studentsInHostel.map(s => s._id);
+      query.createdBy = { $in: studentIds };
     }
     // Admin sees all
 
@@ -170,7 +172,7 @@ export const updateComplaintStatus = async (req, res) => {
           return res.status(403).json({ message: 'Only the student can reopen a complaint.' });
         }
       // Notify warden and admins about reopen
-        const wardens = await User.find({ role: 'Warden' });
+        const wardens = await User.find({ role: 'Warden', hostelName: req.user.hostelName });
         const adminsForReopen = await User.find({ role: 'Admin' });
         for (const w of wardens) {
           await Notification.create({

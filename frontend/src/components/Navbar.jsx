@@ -303,7 +303,7 @@ const Navbar = () => {
                   {/* Avatar circle */}
                   <div style={{
                     width: 36, height: 36, borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${roleColor}, ${roleColor}88)`,
+                    background: user?.bannerColor || `linear-gradient(135deg, ${roleColor}, ${roleColor}88)`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: '#fff', fontWeight: 800, fontSize: '0.85rem',
                     letterSpacing: '0.5px',
@@ -365,20 +365,6 @@ const Navbar = () => {
                         onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                       >
                         <ClipboardList size={16} color="#718EBF" /> To-Do & Notes
-                      </button>
-                      <button
-                        onClick={() => { setIsUserDropdownOpen(false); navigate('/dashboard'); }}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: 10,
-                          width: '100%', padding: '10px 16px',
-                          background: 'transparent', border: 'none',
-                          color: '#1B2559', fontSize: '0.88rem', fontWeight: 500,
-                          cursor: 'pointer', transition: 'background 0.15s'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.05)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                      >
-                        <Settings size={16} color="#718EBF" /> Dashboard
                       </button>
                     </div>
 

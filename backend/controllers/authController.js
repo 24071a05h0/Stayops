@@ -15,6 +15,7 @@ const userFields = (user, token) => ({
   hostelName: user.hostelName,
   phone: user.phone,
   profilePicture: user.profilePicture,
+  bannerColor: user.bannerColor,
   createdAt: user.createdAt,
   ...(token && { token })
 });
@@ -69,7 +70,7 @@ export const updateProfile = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const { name, email, roomNumber, block, hostelName, phone, password, oldPassword } = req.body;
+    const { name, email, roomNumber, block, hostelName, phone, password, oldPassword, bannerColor } = req.body;
 
     if (email && email !== user.email) {
       const emailExists = await User.findOne({ email });
@@ -95,6 +96,7 @@ export const updateProfile = async (req, res) => {
     if (block !== undefined) user.block = block;
     if (hostelName !== undefined) user.hostelName = hostelName;
     if (phone !== undefined) user.phone = phone;
+    if (bannerColor !== undefined) user.bannerColor = bannerColor;
 
     // Handle profile picture from multer
     if (req.file) {

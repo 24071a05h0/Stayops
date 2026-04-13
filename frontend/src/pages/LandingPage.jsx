@@ -248,25 +248,40 @@ const LandingPage = () => {
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <Link to="/register" style={{
-            background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
-            color: '#fff', fontWeight: 700, textDecoration: 'none',
-            padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
-            boxShadow: '0 8px 30px rgba(67,24,255,0.35)',
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            transition: 'all 0.3s ease',
-          }}>
-            Get Started Free <ArrowRight size={18} />
-          </Link>
-          <Link to="/login" style={{
-            background: 'rgba(255,255,255,0.8)',
-            color: '#4318FF', fontWeight: 700, textDecoration: 'none',
-            padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
-            border: '2px solid rgba(67,24,255,0.2)',
-            transition: 'all 0.3s ease',
-          }}>
-            Sign In
-          </Link>
+          {!user ? (
+            <>
+              <Link to="/register" style={{
+                background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
+                color: '#fff', fontWeight: 700, textDecoration: 'none',
+                padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
+                boxShadow: '0 8px 30px rgba(67,24,255,0.35)',
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                transition: 'all 0.3s ease',
+              }}>
+                Get Started Free <ArrowRight size={18} />
+              </Link>
+              <Link to="/login" style={{
+                background: 'rgba(255,255,255,0.8)',
+                color: '#4318FF', fontWeight: 700, textDecoration: 'none',
+                padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
+                border: '2px solid rgba(67,24,255,0.2)',
+                transition: 'all 0.3s ease',
+              }}>
+                Sign In
+              </Link>
+            </>
+          ) : (
+            <Link to="/dashboard" style={{
+              background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
+              color: '#fff', fontWeight: 700, textDecoration: 'none',
+              padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
+              boxShadow: '0 8px 30px rgba(67,24,255,0.35)',
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              transition: 'all 0.3s ease',
+            }}>
+              Go to Dashboard <ArrowRight size={18} />
+            </Link>
+          )}
         </div>
 
         {/* Stats strip */}
@@ -773,24 +788,45 @@ const LandingPage = () => {
         }}>
           Join 500+ hostels already using StayOps to resolve grievances faster and smarter.
         </p>
-        <Link to="/register" style={{
-          background: '#FFFFFF',
-          color: '#4318FF',
-          fontWeight: 700,
-          textDecoration: 'none',
-          padding: '14px 40px',
-          borderRadius: 14,
-          fontSize: '1rem',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 8,
-          boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
-          position: 'relative',
-          zIndex: 1,
-          transition: 'all 0.3s ease',
-        }}>
-          Start for Free <ArrowRight size={18} />
-        </Link>
+        {!user ? (
+          <Link to="/register" style={{
+            background: '#FFFFFF',
+            color: '#4318FF',
+            fontWeight: 700,
+            textDecoration: 'none',
+            padding: '14px 40px',
+            borderRadius: 14,
+            fontSize: '1rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
+            position: 'relative',
+            zIndex: 1,
+            transition: 'all 0.3s ease',
+          }}>
+            Start for Free <ArrowRight size={18} />
+          </Link>
+        ) : (
+          <Link to="/dashboard" style={{
+            background: '#FFFFFF',
+            color: '#4318FF',
+            fontWeight: 700,
+            textDecoration: 'none',
+            padding: '14px 40px',
+            borderRadius: 14,
+            fontSize: '1rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
+            position: 'relative',
+            zIndex: 1,
+            transition: 'all 0.3s ease',
+          }}>
+            Go to Dashboard <ArrowRight size={18} />
+          </Link>
+        )}
       </section>
     </div>
   );

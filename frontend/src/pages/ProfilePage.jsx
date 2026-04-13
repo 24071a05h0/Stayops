@@ -24,7 +24,7 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '', email: '', roomNumber: '', block: '', hostelName: '',
-    oldPassword: '', password: '', profilePictureFile: null
+    oldPassword: '', password: '', profilePictureFile: null, bannerColor: ''
   });
   const [previewPic, setPreviewPic] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -42,6 +42,7 @@ const ProfilePage = () => {
         roomNumber: user.roomNumber || '',
         block: user.block || '',
         hostelName: user.hostelName || '',
+        bannerColor: user.bannerColor || '',
         oldPassword: '',
         password: '',
         profilePictureFile: null
@@ -107,13 +108,27 @@ const ProfilePage = () => {
   if (!user) return null;
 
   const roleColor = ROLE_COLOR[user.role] || '#4318FF';
-  const roleGradient = ROLE_GRADIENT[user.role] || ROLE_GRADIENT['Staff'];
+  const roleGradient = formData.bannerColor ? formData.bannerColor : (ROLE_GRADIENT[user.role] || ROLE_GRADIENT['Staff']);
   const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U';
   const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A';
   const profilePicUrl = user.profilePicture ? `${API_BASE}/${user.profilePicture}` : null;
 
   return (
     <div style={{ maxWidth: 960, margin: '2rem auto', padding: '0 1rem' }}>
+
+      {/* Back button */}
+      <div style={{ marginBottom: 16 }}>
+        <button
+          onClick={() => window.history.back()}
+          style={{
+            background: 'none', border: 'none', color: '#718EBF',
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', padding: 0
+          }}
+        >
+          &larr; Back
+        </button>
+      </div>
 
       {/* Success/Error message at top */}
       {message.text && !isEditing && (
@@ -488,9 +503,8 @@ const ProfilePage = () => {
               {/* Hostel Name */}
               <div>
                 <label style={{ display: 'block', color: '#718EBF', fontSize: '0.78rem', fontWeight: 600, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Hostel Name</label>
-                <input
-                  type="text" value={formData.hostelName}
-                  placeholder="e.g. Sree Venkateswara Hostel"
+                <select
+                  value={formData.hostelName}
                   onChange={e => setFormData({ ...formData, hostelName: e.target.value })}
                   style={{
                     width: '100%', padding: '10px 14px', borderRadius: 10,
@@ -500,7 +514,53 @@ const ProfilePage = () => {
                   }}
                   onFocus={e => e.target.style.borderColor = roleColor}
                   onBlur={e => e.target.style.borderColor = 'rgba(226,232,248,0.8)'}
-                />
+                >
+                  <option value="">Select a Hostel</option>
+                  <option value="Sree Venkateswara Hostel">Sree Venkateswara Hostel</option>
+                  <option value="Krishna Hostel">Krishna Hostel</option>
+                  <option value="Godavari Hostel">Godavari Hostel</option>
+                  <option value="Kaveri Hostel">Kaveri Hostel</option>
+                  <option value="Narmada Hostel">Narmada Hostel</option>
+                  <option value="Yamuna Hostel">Yamuna Hostel</option>
+                </select>
+              </div>
+
+              {/* Banner Color Config */}
+              <div style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+                <label style={{ display: 'block', color: '#718EBF', fontSize: '0.78rem', fontWeight: 600, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Custom Banner Theme</label>
+                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                  {[
+                    { label: 'Default (Role Based)', value: '', color: roleColor },
+                    { label: 'Red', value: 'linear-gradient(135deg, #ef4444, #f87171, #fca5a5)', color: '#ef4444' },
+                    { label: 'Blue', value: 'linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd)', color: '#3b82f6' },
+                    { label: 'Green', value: 'linear-gradient(135deg, #10b981, #34d399, #6ee7b7)', color: '#10b981' },
+                    { label: 'Gold', value: 'linear-gradient(135deg, #f59e0b, #fbbf24, #fcd34d)', color: '#f59e0b' },
+                    { label: 'Purple', value: 'linear-gradient(135deg, #8b5cf6, #a78bfa, #c4b5fd)', color: '#8b5cf6' },
+                    { label: 'Pink', value: 'linear-gradient(135deg, #ec4899, #f472b6, #fbcfe8)', color: '#ec4899' },
+                    { label: 'Teal', value: 'linear-gradient(135deg, #14b8a6, #2dd4bf, #5eead4)', color: '#14b8a6' },
+                    { label: 'Orange', value: 'linear-gradient(135deg, #f97316, #fb923c, #fdba74)', color: '#f97316' },
+                    { label: 'Dark', value: 'linear-gradient(135deg, #1f2937, #374151, #4b5563)', color: '#1f2937' },
+                  ].map(theme => (
+                    <button
+                      key={theme.label}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, bannerColor: theme.value })}
+                      style={{
+                        width: 38, height: 38, borderRadius: '50%',
+                        background: theme.value || theme.color,
+                        border: formData.bannerColor === theme.value 
+                          ? '3px solid #1B2559' 
+                          : '2px solid transparent',
+                        boxShadow: formData.bannerColor === theme.value 
+                          ? '0 0 0 2px #fff inset' 
+                          : '0 2px 8px rgba(0,0,0,0.1)',
+                        cursor: 'pointer', transition: 'all 0.2s',
+                        padding: 0
+                      }}
+                      title={theme.label}
+                    />
+                  ))}
+                </div>
               </div>
 
               {/* Room Number (student only) */}

@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   hostelName: { type: String },
   phone: { type: String },
   profilePicture: { type: String },
+  bannerColor: { type: String },
 }, { timestamps: true });
 
 userSchema.pre('save', async function() {

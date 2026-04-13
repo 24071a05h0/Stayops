@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { Container, Form, Button, Card, Alert, Row, Col } from 'react-bootstrap';
+import { Container, Form, Button, Card, Alert, Row, Col, InputGroup } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
   const { register } = useContext(AuthContext);
@@ -12,6 +12,7 @@ const Register = () => {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,13 +71,28 @@ const Register = () => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="text-light small fw-semibold">Password</Form.Label>
-                <Form.Control 
-                  type="password" 
-                  required
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
+                <InputGroup>
+                  <Form.Control 
+                    type={showPassword ? "text" : "password"} 
+                    required
+                    placeholder="Create a password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    style={{ borderRight: 'none' }}
+                  />
+                  <Button 
+                    variant="outline-secondary" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ 
+                      background: '#fff', 
+                      border: 'var(--bs-border-width) solid var(--bs-border-color)',
+                      borderLeft: 'none',
+                      display: 'flex', alignItems: 'center'
+                    }}
+                  >
+                    {showPassword ? <EyeOff size={18} color="#6c757d" /> : <Eye size={18} color="#6c757d" />}
+                  </Button>
+                </InputGroup>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -97,13 +113,19 @@ const Register = () => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="text-light small fw-semibold">Hostel Name</Form.Label>
-                <Form.Control 
-                  type="text" 
+                <Form.Select 
                   required
-                  placeholder="e.g. Krishna Hostel"
                   value={formData.hostelName}
                   onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
-                />
+                >
+                  <option value="">Select a Hostel</option>
+                  <option value="Sree Venkateswara Hostel">Sree Venkateswara Hostel</option>
+                  <option value="Krishna Hostel">Krishna Hostel</option>
+                  <option value="Godavari Hostel">Godavari Hostel</option>
+                  <option value="Kaveri Hostel">Kaveri Hostel</option>
+                  <option value="Narmada Hostel">Narmada Hostel</option>
+                  <option value="Yamuna Hostel">Yamuna Hostel</option>
+                </Form.Select>
               </Form.Group>
             </Col>
             <Col md={6}>
@@ -139,14 +161,13 @@ const Register = () => {
               <Col md={6}>
                 <Form.Group className="mb-4">
                   <Form.Label className="text-light small fw-semibold">Block</Form.Label>
-                  <Form.Select 
+                  <Form.Control 
+                    type="text"
+                    required={formData.role === 'Student'}
+                    placeholder="e.g. Block A"
                     value={formData.block}
                     onChange={(e) => setFormData({ ...formData, block: e.target.value })}
-                  >
-                    <option value="A">Block A</option>
-                    <option value="B">Block B</option>
-                    <option value="C">Block C</option>
-                  </Form.Select>
+                  />
                 </Form.Group>
               </Col>
             </Row>
