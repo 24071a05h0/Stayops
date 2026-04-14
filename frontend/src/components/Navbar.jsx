@@ -46,16 +46,36 @@ const Navbar = () => {
 
   const fetchWeather = async (lat, lon, locationName = 'Local') => {
     try {
+      let finalName = locationName;
+      
+      // If geolocation is used, resolve the city name
+      if (locationName === 'Local') {
+        const revGeoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+        const revGeoData = await revGeoRes.json();
+        finalName = revGeoData.city || revGeoData.locality || 'Local';
+      }
+
       const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
       if (res.ok) {
         const data = await res.json();
         setWeather(data.current_weather);
-        setWeatherLocationName(locationName);
+        setWeatherLocationName(finalName);
       }
     } catch (err) {}
   };
 
-  useEffect(() => {
+  const refreshWeather = () => {
+    // 1. Check if user has a preferred city saved
+    const preferredCity = localStorage.getItem('preferredWeatherCity');
+    if (preferredCity) {
+      try {
+        const data = JSON.parse(preferredCity);
+        fetchWeather(data.lat, data.lon, data.name);
+        return;
+      } catch (err) {}
+    }
+
+    // 2. Fallback: Geolocation
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Local'),
@@ -65,6 +85,14 @@ const Navbar = () => {
     } else {
       fetchWeather(28.6139, 77.2090, 'Delhi, India');
     }
+  };
+
+  useEffect(() => {
+    refreshWeather();
+
+    // Listen for changes from the Weather Dashboard
+    window.addEventListener('weatherPreferenceChanged', refreshWeather);
+    return () => window.removeEventListener('weatherPreferenceChanged', refreshWeather);
   }, []);
 
   const handleSearchWeather = async (e) => {

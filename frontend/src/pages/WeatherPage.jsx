@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { 
   Cloud, Sun, CloudRain, CloudLightning, Wind, Droplets, 
-  ArrowLeft, Search, Calendar, TrendingUp, History, LineChart as LineChartIcon
+  ArrowLeft, Search, Calendar, TrendingUp, History, Sparkles, LineChart as LineChartIcon
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -39,14 +39,21 @@ const WeatherPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Try to get user's location
+    // 1. Check if user has a preferred city saved
+    const preferredCity = localStorage.getItem('preferredWeatherCity');
+    if (preferredCity) {
+      const data = JSON.parse(preferredCity);
+      fetchWeatherData(data.name, data.lat, data.lon);
+      return;
+    }
+
+    // 2. Fallback: Try to get user's location
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           fetchWeatherData(null, position.coords.latitude, position.coords.longitude);
         },
         (error) => {
-          console.warn("Geolocation denied, using default city:", city);
           fetchWeatherData(city);
         }
       );
@@ -55,20 +62,24 @@ const WeatherPage = () => {
     }
   }, []);
 
+  const [currentCoords, setCurrentCoords] = useState(null);
+
   const fetchWeatherData = async (cityName, lat = null, lon = null) => {
     setLoading(true);
     try {
       let latitude, longitude, name;
 
       if (lat && lon) {
-        // Fetch city name from coordinates (Reverse Geocoding)
         latitude = lat;
         longitude = lon;
-        const revGeoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
-        const revGeoData = await revGeoRes.json();
-        name = revGeoData.city || revGeoData.locality || "Your Location";
+        if (cityName) {
+          name = cityName;
+        } else {
+          const revGeoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+          const revGeoData = await revGeoRes.json();
+          name = revGeoData.city || revGeoData.locality || "Your Location";
+        }
       } else {
-        // 1. Get Coordinates for city (Open-Meteo Geocoding)
         const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityName}&count=1&language=en&format=json`);
         const geoData = await geoRes.json();
         
@@ -84,8 +95,8 @@ const WeatherPage = () => {
       }
 
       setCity(name);
+      setCurrentCoords({ lat: latitude, lon: longitude });
 
-      // 2. Fetch Current & Forecast Data
       const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,temperature_2m_mean&timezone=auto`);
       const weatherData = await weatherRes.json();
 
@@ -181,17 +192,53 @@ const WeatherPage = () => {
         >
           <ArrowLeft size={22} strokeWidth={2.5} />
         </button>
-        <Form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 500 }}>
+        <Form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, width: '100%', maxWidth: 700 }}>
           <Form.Control 
             type="text" 
             placeholder="Enter city" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ borderRadius: 10, padding: '12px 20px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} 
+            style={{ borderRadius: 12, padding: '12px 20px', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', flex: 1 }} 
           />
-          <Button type="submit" style={{ background: '#10b981', border: 'none', borderRadius: 10, padding: '0 25px', fontWeight: 700 }}>
+          <Button type="submit" style={{ background: '#10b981', border: 'none', borderRadius: 12, padding: '0 20px', fontWeight: 700, whiteSpace: 'nowrap' }}>
             Get Weather
           </Button>
+          <button 
+            type="button"
+            onClick={() => {
+              localStorage.setItem('preferredWeatherCity', JSON.stringify({ name: city, ...currentCoords }));
+              window.dispatchEvent(new Event('weatherPreferenceChanged'));
+              alert(`Successfully set ${city} as your local weather!`);
+            }}
+            style={{ 
+              background: '#FFFFFF', 
+              border: '2px solid rgba(67, 24, 255, 0.15)', 
+              color: '#4318FF',
+              borderRadius: 12, 
+              padding: '0 20px', 
+              fontSize: '0.85rem', 
+              fontWeight: 800,
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 8,
+              cursor: 'pointer',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              boxShadow: '0 4px 12px rgba(67, 24, 255, 0.05)',
+              whiteSpace: 'nowrap'
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.background = 'rgba(67, 24, 255, 0.03)';
+              e.currentTarget.style.borderColor = 'rgba(67, 24, 255, 0.3)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.background = '#FFFFFF';
+              e.currentTarget.style.borderColor = 'rgba(67, 24, 255, 0.15)';
+            }}
+          >
+            <Sparkles size={16} /> SET AS PRIMARY
+          </button>
         </Form>
       </div>
 
@@ -231,7 +278,9 @@ const WeatherPage = () => {
             <Col lg={4}>
               <Card style={{ borderRadius: 24, border: 'none', boxShadow: '0 8px 30px rgba(0,0,0,0.03)', height: '100%', background: 'linear-gradient(to bottom, #dbeafe, #fef3c7)' }}>
                 <Card.Body style={{ padding: '2rem', textAlign: 'center' }}>
-                  <h2 style={{ fontWeight: 900, color: '#1B2559', fontSize: '2.5rem', marginBottom: '0.5rem' }}>{city}</h2>
+                  <div style={{ position: 'relative' }}>
+                    <h2 style={{ fontWeight: 900, color: '#1B2559', fontSize: '2.5rem', marginBottom: '0.5rem' }}>{city}</h2>
+                  </div>
                   <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1B2559', marginBottom: '1rem' }}>{Math.round(weather.temperature_2m)}°C</div>
                   <div style={{ color: '#718EBF', fontWeight: 600, marginBottom: '2rem' }}>Humidity: {weather.relative_humidity_2m}%</div>
                   <div style={{ fontStyle: 'italic', fontWeight: 800, color: '#1B2559', fontSize: '1.2rem', marginBottom: '2.5rem', textTransform: 'lowercase' }}>clear sky</div>
