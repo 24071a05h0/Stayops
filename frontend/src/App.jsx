@@ -18,6 +18,7 @@ import ComplaintTracker from './pages/ComplaintTracker';
 import Notifications from './pages/Notifications';
 import ProfilePage from './pages/ProfilePage';
 import WorkspacePage from './pages/WorkspacePage';
+import WeatherPage from './pages/WeatherPage';
 import { AuthContext } from './context/AuthContext';
 
 const AppContent = () => {
@@ -51,6 +52,7 @@ const AppContent = () => {
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/workspace" element={<ProtectedRoute><WorkspacePage /></ProtectedRoute>} />
+            <Route path="/weather" element={<ProtectedRoute><WeatherPage /></ProtectedRoute>} />
             <Route path="/complaint/:id" element={<ProtectedRoute><ComplaintTracker /></ProtectedRoute>} />
           </Routes>
         </main>

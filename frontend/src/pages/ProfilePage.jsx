@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { authService, complaintService } from '../services/api';
-import { User, Mail, Shield, Home, Building2, Calendar, Edit3, Save, X, AlertTriangle, CheckCircle, Clock, FileText, Camera, Landmark } from 'lucide-react';
+import { User, Mail, Shield, Home, Building2, Calendar, Edit3, Save, X, AlertTriangle, CheckCircle, Clock, FileText, Camera, Landmark, ArrowLeft } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
@@ -20,6 +21,7 @@ const ROLE_GRADIENT = {
 };
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const { user, updateUser } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -117,16 +119,30 @@ const ProfilePage = () => {
     <div style={{ maxWidth: 960, margin: '2rem auto', padding: '0 1rem' }}>
 
       {/* Back button */}
-      <div style={{ marginBottom: 16 }}>
-        <button
-          onClick={() => window.history.back()}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: '1.5rem' }}>
+        <button 
+          onClick={() => navigate(-1)}
           style={{
-            background: 'none', border: 'none', color: '#718EBF',
-            display: 'flex', alignItems: 'center', gap: 6,
-            fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', padding: 0
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            width: 42, height: 42, borderRadius: 12,
+            background: '#ffffff', border: '1px solid rgba(67,24,255,0.15)',
+            color: '#4318FF', cursor: 'pointer',
+            transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            boxShadow: '0 4px 12px rgba(67,24,255,0.05)'
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(67,24,255,0.04)';
+            e.currentTarget.style.transform = 'translateX(-3px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(67,24,255,0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = '#ffffff';
+            e.currentTarget.style.transform = 'none';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(67,24,255,0.05)';
+          }}
+          title="Go Back"
         >
-          &larr; Back
+          <ArrowLeft size={22} strokeWidth={2.5} />
         </button>
       </div>
 

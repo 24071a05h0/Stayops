@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api, { notificationService } from '../services/api';
-import { Hexagon, LogOut, Bell, Sun, Cloud, CloudRain, Settings, User, ChevronDown, ClipboardList } from 'lucide-react';
+import { Hexagon, LogOut, Bell, Sun, Cloud, CloudRain, Settings, User, ChevronDown, ClipboardList, CheckSquare, Notebook } from 'lucide-react';
 
 const ROLE_COLOR = {
   'Warden': '#f59e0b',
@@ -165,21 +165,21 @@ const Navbar = () => {
               {/* Weather Widget Container */}
               <div style={{ position: 'relative' }} ref={weatherRef}>
                 <div 
-                  onClick={() => setIsWeatherOpen(!isWeatherOpen)}
+                  onClick={() => navigate('/weather')}
                   onMouseEnter={() => setIsWeatherHovered(true)}
                   onMouseLeave={() => setIsWeatherHovered(false)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 10,
                     padding: '4px 14px 4px 6px',
                     borderRadius: 40,
-                    background: isWeatherHovered || isWeatherOpen ? 'linear-gradient(145deg, rgba(67,24,255,0.06), rgba(123,95,255,0.02))' : 'rgba(0,0,0,0.015)',
-                    border: isWeatherHovered || isWeatherOpen ? '1px solid rgba(67,24,255,0.2)' : '1px solid rgba(0,0,0,0.04)',
-                    boxShadow: isWeatherHovered || isWeatherOpen ? '0 8px 16px rgba(67,24,255,0.1)' : '0 2px 6px rgba(0,0,0,0.02)',
-                    transform: isWeatherHovered && !isWeatherOpen ? 'translateY(-2px) scale(1.02)' : 'none',
+                    background: isWeatherHovered ? 'linear-gradient(145deg, rgba(67,24,255,0.06), rgba(123,95,255,0.02))' : 'rgba(0,0,0,0.015)',
+                    border: isWeatherHovered ? '1px solid rgba(67,24,255,0.2)' : '1px solid rgba(0,0,0,0.04)',
+                    boxShadow: isWeatherHovered ? '0 8px 16px rgba(67,24,255,0.1)' : '0 2px 6px rgba(0,0,0,0.02)',
+                    transform: isWeatherHovered ? 'translateY(-2px) scale(1.02)' : 'none',
                     transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                     marginRight: 8,
                     cursor: 'pointer'
-                  }} title="Click to change location">
+                  }} title="View detailed weather dashboard">
                   
                   {/* Icon Container */}
                   <div style={{
@@ -202,58 +202,55 @@ const Navbar = () => {
                     </span>
                   </div>
                 </div>
-
-                {isWeatherOpen && (
-                  <div style={{
-                    position: 'absolute', top: '100%', right: 0, marginTop: 8,
-                    background: '#fff', borderRadius: 12, padding: 12,
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid rgba(226, 232, 248, 0.8)',
-                    width: 220, zIndex: 1000
-                  }}>
-                    <form onSubmit={handleSearchWeather} style={{ display: 'flex', gap: 6 }}>
-                      <input 
-                        type="text" 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search city..." 
-                        style={{
-                          flex: 1, padding: '6px 10px', borderRadius: 8, 
-                          border: '1px solid #E2E8F8', fontSize: '0.85rem', width: '100%',
-                          outline: 'none'
-                        }}
-                      />
-                      <button type="submit" disabled={isSearching} style={{
-                        background: '#4318FF', color: '#fff', border: 'none',
-                        borderRadius: 8, padding: '0 12px', fontSize: '0.85rem', cursor: isSearching ? 'not-allowed' : 'pointer',
-                        fontWeight: 600, opacity: isSearching ? 0.7 : 1
-                      }}>{isSearching ? '...' : 'Go'}</button>
-                    </form>
-                    
-                    {searchedWeather && (
-                      <div
-                        onClick={() => {
-                          setWeather(searchedWeather);
-                          setWeatherLocationName(searchedLocationName);
-                          setIsWeatherOpen(false);
-                          setSearchQuery('');
-                          setSearchedWeather(null);
-                        }}
-                        style={{ marginTop: 12, padding: '10px 12px', background: 'rgba(67,24,255,0.04)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-                      >
-                        <div>
-                          <div style={{ fontWeight: 700, color: '#1B2559', fontSize: '1.1rem' }}>
-                            {Math.round(searchedWeather.temperature)}°C
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#718EBF', maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            {searchedLocationName}
-                          </div>
-                        </div>
-                        {renderWeatherIcon(searchedWeather.weathercode)}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
+
+              {/* To-Do & Notes Button */}
+              <Link to="/workspace" title="To-Do & Notes" style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '7px 16px',
+                borderRadius: 40,
+                background: 'linear-gradient(135deg, rgba(67,24,255,0.08), rgba(123,95,255,0.03))',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(67,24,255,0.15)',
+                color: '#4318FF',
+                textDecoration: 'none',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                marginRight: 8,
+                boxShadow: '0 4px 12px rgba(67,24,255,0.05)',
+                transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #4318FF, #7B5FFF)';
+                e.currentTarget.style.color = '#FFFFFF';
+                e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(67,24,255,0.25)';
+                e.currentTarget.style.borderColor = 'transparent';
+                e.currentTarget.style.textShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                const iconBox = e.currentTarget.querySelector('.icon-box');
+                if (iconBox) iconBox.style.background = 'rgba(255,255,255,0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(67,24,255,0.08), rgba(123,95,255,0.03))';
+                e.currentTarget.style.color = '#4318FF';
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(67,24,255,0.05)';
+                e.currentTarget.style.borderColor = 'rgba(67,24,255,0.15)';
+                e.currentTarget.style.textShadow = 'none';
+                const iconBox = e.currentTarget.querySelector('.icon-box');
+                if (iconBox) iconBox.style.background = 'rgba(67,24,255,0.1)';
+              }}>
+                <div className="icon-box" style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'rgba(67,24,255,0.1)', borderRadius: '50%',
+                  width: 28, height: 28, marginRight: -2,
+                  transition: 'background 0.3s'
+                }}>
+                  <ClipboardList size={16} strokeWidth={2.5} />
+                </div>
+                <span className="hide-on-mobile">To-Do & Notes</span>
+              </Link>
 
               {/* Dashboard link */}
               <Link to="/dashboard" className="hide-on-mobile" style={{
@@ -355,20 +352,6 @@ const Navbar = () => {
                         onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                       >
                         <User size={16} color="#718EBF" /> View Profile
-                      </button>
-                      <button
-                        onClick={() => { setIsUserDropdownOpen(false); navigate('/workspace'); }}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: 10,
-                          width: '100%', padding: '10px 16px',
-                          background: 'transparent', border: 'none',
-                          color: '#1B2559', fontSize: '0.88rem', fontWeight: 500,
-                          cursor: 'pointer', transition: 'background 0.15s'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.05)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                      >
-                        <ClipboardList size={16} color="#718EBF" /> To-Do & Notes
                       </button>
                     </div>
 
