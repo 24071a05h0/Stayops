@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner } from 'react-bootstrap';
-import { analyticsService } from '../services/api';
+import { Container, Row, Col, Card, Spinner, Badge } from 'react-bootstrap';
+import { analyticsService, feedbackService } from '../services/api';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -12,22 +12,27 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
-import { Activity, ShieldAlert, CheckCircle, BarChart3 } from 'lucide-react';
+import { Activity, ShieldAlert, CheckCircle, BarChart3, Building2, MessageSquare } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
+  const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAnalytics();
+    fetchData();
   }, []);
 
-  const fetchAnalytics = async () => {
+  const fetchData = async () => {
     try {
-      const { data } = await analyticsService.getAnalytics();
-      setStats(data);
+      const [analyticsRes, feedbackRes] = await Promise.all([
+        analyticsService.getAnalytics(),
+        feedbackService.getFeedbacks()
+      ]);
+      setStats(analyticsRes.data);
+      setFeedbacks(feedbackRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -81,8 +86,8 @@ const AdminDashboard = () => {
         <BarChart3 className="text-primary opacity-50" size={36} />
       </div>
 
-      <Row className="g-4 mb-5">
-        <Col md={3}>
+      <Row className="row-cols-1 row-cols-md-3 row-cols-xl-5 g-4 mb-5">
+        <Col>
           <Card className="glass-panel text-center h-100 p-3">
             <Card.Body>
               <Activity className="text-primary mb-3" size={32} />
@@ -91,7 +96,7 @@ const AdminDashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={3}>
+        <Col>
           <Card className="glass-panel text-center h-100 p-3">
             <Card.Body>
               <CheckCircle className="text-success mb-3" size={32} />
@@ -100,7 +105,7 @@ const AdminDashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={3}>
+        <Col>
           <Card className="glass-panel text-center h-100 p-3">
             <Card.Body>
               <Activity className="text-warning mb-3" size={32} />
@@ -109,12 +114,21 @@ const AdminDashboard = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={3}>
+        <Col>
           <Card className="glass-panel text-center h-100 p-3 border-0 border-top border-4 border-danger">
             <Card.Body>
               <ShieldAlert className="text-danger mb-3" size={32} />
               <h2 className="text-danger fw-bold m-0">{stats.slaBreaches}</h2>
               <p className="text-muted small text-uppercase fw-semibold mb-0">SLA Breaches</p>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card className="glass-panel text-center h-100 p-3 border-0 border-top border-4" style={{ borderColor: '#8b5cf6' }}>
+            <Card.Body>
+              <Building2 className="mb-3" size={32} color="#8b5cf6" />
+              <h2 className="fw-bold m-0" style={{ color: '#8b5cf6' }}>{stats.registeredHostels || 0}</h2>
+              <p className="text-muted small text-uppercase fw-semibold mb-0">Reg. Hostels</p>
             </Card.Body>
           </Card>
         </Col>
@@ -150,6 +164,40 @@ const AdminDashboard = () => {
             </Card.Body>
           </Card>
         </Col>
+      </Row>
+
+      {/* ── FEEDBACKS SECTION ── */}
+      <div className="mt-5 mb-4 d-flex align-items-center gap-2">
+        <MessageSquare color="#1B2559" size={24} style={{ filter: 'invert(1)' }} />
+        <h3 className="text-white fw-bold mb-0">User Feedbacks</h3>
+        <Badge bg="primary" className="ms-2">{feedbacks.length}</Badge>
+      </div>
+
+      <Row className="g-4 mb-5">
+        {feedbacks.length === 0 ? (
+          <Col>
+            <div className="text-center text-muted mt-3 p-4 glass-panel rounded-3">
+              No feedback has been submitted yet.
+            </div>
+          </Col>
+        ) : (
+          feedbacks.map((fb, idx) => (
+            <Col md={6} lg={4} key={idx}>
+              <Card className="glass-panel h-100 border-0 p-3">
+                <Card.Body>
+                  <p className="text-white mb-3" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>"{fb.text}"</p>
+                  <div className="d-flex justify-content-between align-items-center mt-auto border-top border-secondary pt-3">
+                    <div>
+                      <small className="text-muted d-block">{fb.user ? fb.user.name : 'Anonymous'}</small>
+                      <small className="text-primary">{fb.user ? fb.user.role : 'Guest'}</small>
+                    </div>
+                    <small className="text-muted">{new Date(fb.createdAt).toLocaleDateString()}</small>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        )}
       </Row>
     </Container>
   );

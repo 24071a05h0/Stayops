@@ -1,4 +1,5 @@
 import Complaint from '../models/Complaint.js';
+import User from '../models/User.js';
 
 export const getAnalytics = async (req, res) => {
   try {
@@ -23,11 +24,16 @@ export const getAnalytics = async (req, res) => {
       { $group: { _id: '$priority', count: { $sum: 1 } } }
     ]);
 
+    // Number of registered hostels 
+    const hostels = await User.find({ role: 'Warden' }).distinct('hostelName');
+    const validHostels = hostels.filter(h => h && h.trim() !== '');
+
     res.json({
       total: totalComplaints,
       resolved: resolvedComplaints,
       pending: pendingComplaints,
       slaBreaches: slaBreaches,
+      registeredHostels: validHostels.length,
       byCategory: categoryStats,
       byPriority: priorityStats
     });

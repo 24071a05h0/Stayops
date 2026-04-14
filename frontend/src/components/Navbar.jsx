@@ -147,7 +147,6 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* ── Right side ── */}
         <div className="navbar-right-mobile" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           {!user ? (
             <>

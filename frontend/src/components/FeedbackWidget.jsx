@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { MessageSquarePlus, CheckCircle2, X } from 'lucide-react';
+import { feedbackService } from '../services/api';
 
 const FeedbackWidget = () => {
   const [show, setShow] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success'
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!feedback.trim()) return;
 
     setStatus('submitting');
-    // Mock API call delay
-    setTimeout(() => {
+    try {
+      await feedbackService.submitFeedback({ text: feedback });
       setStatus('success');
       setTimeout(() => {
         setShow(false);
         setFeedback('');
         setStatus('idle');
       }, 2000);
-    }, 800);
+    } catch (err) {
+      console.error(err);
+      setStatus('idle');
+      alert('Failed to send feedback, please try again.');
+    }
   };
 
   return (

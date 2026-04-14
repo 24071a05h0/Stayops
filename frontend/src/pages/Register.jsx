@@ -125,29 +125,31 @@ const Register = () => {
 
           <Row>
             <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label className="text-light small fw-semibold">Hostel Name</Form.Label>
-                {formData.role === 'Warden' ? (
-                  <Form.Control 
-                    type="text" 
-                    required
-                    placeholder="Enter new hostel name"
-                    value={formData.hostelName}
-                    onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
-                  />
-                ) : (
-                  <Form.Select 
-                    required
-                    value={formData.hostelName}
-                    onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
-                  >
-                    <option value="">Select a Hostel</option>
-                    {availableHostels.map((hostel, i) => (
-                      <option key={i} value={hostel}>{hostel}</option>
-                    ))}
-                  </Form.Select>
-                )}
-              </Form.Group>
+              {formData.role !== 'Admin' && (
+                <Form.Group className="mb-3">
+                  <Form.Label className="text-light small fw-semibold">Hostel Name</Form.Label>
+                  {formData.role === 'Warden' ? (
+                    <Form.Control 
+                      type="text" 
+                      required
+                      placeholder="Enter new hostel name"
+                      value={formData.hostelName}
+                      onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
+                    />
+                  ) : (
+                    <Form.Select 
+                      required
+                      value={formData.hostelName}
+                      onChange={(e) => setFormData({ ...formData, hostelName: e.target.value })}
+                    >
+                      <option value="">Select a Hostel</option>
+                      {availableHostels.map((hostel, i) => (
+                        <option key={i} value={hostel}>{hostel}</option>
+                      ))}
+                    </Form.Select>
+                  )}
+                </Form.Group>
+              )}
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3">

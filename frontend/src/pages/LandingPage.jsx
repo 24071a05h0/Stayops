@@ -202,94 +202,161 @@ const LandingPage = () => {
   return (
     <div className="fade-in" style={{ marginTop: '-1rem' }}>
 
-      {/* ───────── HERO ───────── */}
-      <section style={{ textAlign: 'center', padding: '5rem 1rem 3rem' }}>
+      {/* ───────── HERO & SLIDER (TWO-COLUMN EFFICIENT) ───────── */}
+      <section style={{
+        position: 'relative',
+        margin: '1rem -1rem 2rem',
+        padding: '3rem 1rem 4rem',
+        overflow: 'hidden',
+        minHeight: 500,
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        {/* Dynamic Background Image layer for ambiance */}
         <div style={{
-          display: 'inline-block',
-          background: 'linear-gradient(135deg, rgba(67,24,255,0.10), rgba(123,95,255,0.08))',
-          border: '1px solid rgba(67,24,255,0.15)',
-          borderRadius: 100,
-          padding: '6px 22px',
-          marginBottom: '1.5rem',
-          fontSize: '0.82rem',
-          fontWeight: 700,
-          letterSpacing: '1.5px',
-          textTransform: 'uppercase',
-          color: '#4318FF',
-        }}>
-          Next-Gen Hostel Management
-        </div>
+          position: 'absolute', inset: 0, backgroundImage: `url(${feature.image})`,
+          backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.12,
+          filter: 'blur(16px)', zIndex: 0, transition: 'background-image 0.5s ease-in-out'
+        }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(180deg, rgba(237,240,255,0.92) 0%, rgba(237,240,255,0.85) 40%, rgba(237,240,255,0.98) 100%)', zIndex: 1,
+        }} />
 
-        <h1 style={{
-          fontSize: 'clamp(2.2rem, 5vw, 3.6rem)',
-          fontWeight: 800,
-          lineHeight: 1.15,
-          maxWidth: 720,
-          margin: '0 auto 1.2rem',
-          color: '#1B2559',
-        }}>
-          <span style={{
-            background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>StayOps</span>{' '}— Smart Hostel Operations
-        </h1>
-
-        <p style={{
-          fontSize: '1.12rem',
-          color: '#718EBF',
-          maxWidth: 620,
-          margin: '0 auto 2.5rem',
-          lineHeight: 1.7,
-        }}>
-          The complete grievance management platform for your hostel — AI automation,
-          accountability tracking, and smart SLA analytics.{' '}
-          <strong style={{ color: '#4318FF' }}>Built for modern hostels.</strong>
-        </p>
-
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
-          {!user ? (
-            <>
-              <Link to="/register" style={{
-                background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
-                color: '#fff', fontWeight: 700, textDecoration: 'none',
-                padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
-                boxShadow: '0 8px 30px rgba(67,24,255,0.35)',
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                transition: 'all 0.3s ease',
+        <Container style={{ position: 'relative', zIndex: 2, maxWidth: 1100 }}>
+          <Row className="align-items-center">
+            
+            {/* HERO TEXT (LEFT ON DESKTOP) */}
+            <Col lg={5} className="text-center text-lg-start mb-5 mb-lg-0">
+              <div style={{
+                display: 'inline-block',
+                background: 'linear-gradient(135deg, rgba(67,24,255,0.10), rgba(123,95,255,0.08))',
+                border: '1px solid rgba(67,24,255,0.15)', borderRadius: 100,
+                padding: '5px 18px', marginBottom: '1.2rem', fontSize: '0.75rem',
+                fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#4318FF',
               }}>
-                Get Started Free <ArrowRight size={18} />
-              </Link>
-              <Link to="/login" style={{
-                background: 'rgba(255,255,255,0.8)',
-                color: '#4318FF', fontWeight: 700, textDecoration: 'none',
-                padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
-                border: '2px solid rgba(67,24,255,0.2)',
-                transition: 'all 0.3s ease',
-              }}>
-                Sign In
-              </Link>
-            </>
-          ) : (
-            <Link to="/dashboard" style={{
-              background: 'linear-gradient(135deg, #4318FF, #7B5FFF)',
-              color: '#fff', fontWeight: 700, textDecoration: 'none',
-              padding: '14px 36px', borderRadius: 14, fontSize: '1rem',
-              boxShadow: '0 8px 30px rgba(67,24,255,0.35)',
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              transition: 'all 0.3s ease',
-            }}>
-              Go to Dashboard <ArrowRight size={18} />
-            </Link>
-          )}
-        </div>
+                Next-Gen Hostel Management
+              </div>
 
-        {/* Stats strip */}
+              <h1 style={{
+                fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 800, lineHeight: 1.15,
+                color: '#1B2559', marginBottom: '1.2rem',
+              }}>
+                <span style={{
+                  background: 'linear-gradient(135deg, #4318FF, #7B5FFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                }}>StayOps</span>{' '}— Smart Hostel Operations
+              </h1>
+
+              <p style={{
+                fontSize: '1.05rem', color: '#718EBF', lineHeight: 1.6, maxWidth: 500, margin: '0 auto',
+              }} className="mx-lg-0 text-center text-lg-start">
+                The complete grievance management platform for your hostel — AI automation, accountability tracking, and smart SLA analytics. <strong style={{ color: '#4318FF' }}>Built for modern hostels.</strong>
+              </p>
+            </Col>
+
+            {/* SLIDER (RIGHT ON DESKTOP) */}
+            <Col lg={7}>
+              <div style={{ position: 'relative', padding: '0 1rem' }}>
+                {/* Arrow buttons */}
+                <button onClick={prevSlide} aria-label="Previous feature" style={{
+                  position: 'absolute', left: -10, top: '50%', transform: 'translateY(-50%)',
+                  width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.95)',
+                  border: '1px solid rgba(67,24,255,0.12)', boxShadow: '0 4px 16px rgba(67,24,255,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 5,
+                  color: '#4318FF',
+                }}>
+                  <ChevronLeft size={20} />
+                </button>
+                <button onClick={nextSlide} aria-label="Next feature" style={{
+                  position: 'absolute', right: -10, top: '50%', transform: 'translateY(-50%)',
+                  width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.95)',
+                  border: '1px solid rgba(67,24,255,0.12)', boxShadow: '0 4px 16px rgba(67,24,255,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 5,
+                  color: '#4318FF',
+                }}>
+                  <ChevronRight size={20} />
+                </button>
+
+                {/* Slide card */}
+                <div style={{
+                  background: '#ffffff', borderRadius: 24, border: '1px solid rgba(67,24,255,0.08)',
+                  boxShadow: '0 10px 40px rgba(67,24,255,0.08)', padding: 0,
+                  display: 'flex', flexWrap: 'wrap',
+                  alignItems: 'stretch', justifyContent: 'center', overflow: 'hidden',
+                  minHeight: 340, opacity: isAnimating ? 0 : 1,
+                  transform: isAnimating ? `translateX(${slideDirection === 'right' ? '20px' : '-20px'})` : 'translateX(0)',
+                  transition: 'opacity 0.35s ease, transform 0.35s ease',
+                  margin: '0 auto',
+                  width: '100%'
+                }}>
+                  {/* Text Side (flex based for responsiveness) */}
+                  <div style={{
+                    flex: '1 1 50%', padding: '2rem 2rem 2rem 2.5rem', display: 'flex',
+                    flexDirection: 'column', justifyContent: 'center', textAlign: 'left', minWidth: 260
+                  }}>
+                    <div style={{
+                      width: 50, height: 50, borderRadius: 16, background: feature.bg,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: feature.color, marginBottom: '1.2rem',
+                    }}>
+                      {feature.icon && React.cloneElement(feature.icon, { size: 24 })}
+                    </div>
+
+                    <div style={{
+                      fontSize: '0.65rem', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', color: feature.color, marginBottom: 8,
+                    }}>
+                      {feature.tagline}
+                    </div>
+
+                    <h3 style={{
+                      fontSize: 'clamp(1.4rem, 2.5vw, 1.8rem)', fontWeight: 800, color: '#1B2559', margin: '0 0 0.8rem', lineHeight: 1.2
+                    }}>
+                      {feature.title}
+                    </h3>
+
+                    <p style={{
+                      fontSize: '0.95rem', color: '#718EBF', lineHeight: 1.6, margin: 0,
+                    }}>
+                      {feature.desc}
+                    </p>
+                  </div>
+
+                  {/* Image Side */}
+                  <div style={{
+                    flex: '1 1 40%', minHeight: 200, backgroundImage: `url(${feature.image})`,
+                    backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative',
+                  }}>
+                    {/* Subtle gradient overlay to blend into the white card */}
+                    <div style={{
+                      position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 40%)',
+                    }} />
+                  </div>
+                </div>
+
+                {/* Dots indicator */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: '1.5rem' }}>
+                  {FEATURES.map((_, i) => (
+                    <button
+                      key={i} onClick={() => goToSlide(i)} aria-label={`Go to feature ${i + 1}`}
+                      style={{
+                        width: currentSlide === i ? 24 : 8, height: 8, borderRadius: 100, border: 'none',
+                        background: currentSlide === i ? 'linear-gradient(135deg, #4318FF, #7B5FFF)' : 'rgba(67,24,255,0.15)',
+                        cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)', padding: 0,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      {/* ───────── STATS STRIP ───────── */}
+      <section style={{ padding: '2rem 1rem 4rem', textAlign: 'center' }}>
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           gap: 'clamp(1.5rem, 4vw, 3.5rem)',
-          marginTop: '3.5rem',
           flexWrap: 'wrap',
         }}>
           {STATS.map((s, i) => (
@@ -310,210 +377,6 @@ const LandingPage = () => {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* ───────── FEATURES SLIDER ───────── */}
-      <section style={{
-        position: 'relative',
-        margin: '2rem -1rem',
-        padding: '5rem 1rem',
-        overflow: 'hidden',
-        minHeight: 420,
-      }}>
-        {/* Dynamic Background Image layer for ambiance */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${feature.image})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.1,
-          filter: 'blur(10px)',
-          zIndex: 0,
-          transition: 'background-image 0.5s ease-in-out'
-        }} />
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(237,240,255,0.95) 0%, rgba(237,240,255,0.85) 40%, rgba(237,240,255,0.95) 100%)',
-          zIndex: 1,
-        }} />
-
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 900, margin: '0 auto' }}>
-          {/* Section header */}
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <div style={{
-              display: 'inline-block',
-              background: 'rgba(67,24,255,0.08)',
-              borderRadius: 100,
-              padding: '5px 18px',
-              marginBottom: '0.8rem',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              letterSpacing: '2px',
-              textTransform: 'uppercase',
-              color: '#4318FF',
-            }}>
-              ✨ Features
-            </div>
-            <h2 style={{
-              fontSize: 'clamp(1.8rem, 4vw, 2.6rem)',
-              fontWeight: 800,
-              color: '#1B2559',
-              margin: 0,
-            }}>
-              Everything your hostel needs
-            </h2>
-            <p style={{ color: '#718EBF', marginTop: '0.5rem', fontSize: '1rem' }}>
-              Swipe through our core capabilities designed for modern hostel management
-            </p>
-          </div>
-
-          {/* Slider container */}
-          <div style={{ position: 'relative' }}>
-            {/* Arrow buttons */}
-            <button onClick={prevSlide} aria-label="Previous feature" style={{
-              position: 'absolute', left: -20, top: '50%', transform: 'translateY(-50%)',
-              width: 48, height: 48, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.95)',
-              border: '1px solid rgba(67,24,255,0.12)',
-              boxShadow: '0 4px 16px rgba(67,24,255,0.10)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', zIndex: 5,
-              transition: 'all 0.3s ease',
-              color: '#4318FF',
-            }}>
-              <ChevronLeft size={22} />
-            </button>
-            <button onClick={nextSlide} aria-label="Next feature" style={{
-              position: 'absolute', right: -20, top: '50%', transform: 'translateY(-50%)',
-              width: 48, height: 48, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.95)',
-              border: '1px solid rgba(67,24,255,0.12)',
-              boxShadow: '0 4px 16px rgba(67,24,255,0.10)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', zIndex: 5,
-              transition: 'all 0.3s ease',
-              color: '#4318FF',
-            }}>
-              <ChevronRight size={22} />
-            </button>
-            {/* Slide card */}
-            <div className="feature-slide-card" style={{
-              background: '#ffffff',
-              borderRadius: 32,
-              border: '1px solid rgba(67,24,255,0.08)',
-              boxShadow: '0 20px 60px rgba(67,24,255,0.08)',
-              padding: 0,
-              margin: '0 2.5rem',
-              minHeight: 380,
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'stretch',
-              justifyContent: 'space-between',
-              overflow: 'hidden',
-              opacity: isAnimating ? 0 : 1,
-              transform: isAnimating
-                ? `translateX(${slideDirection === 'right' ? '40px' : '-40px'})`
-                : 'translateX(0)',
-              transition: 'opacity 0.35s ease, transform 0.35s ease',
-            }}>
-              {/* Text Side (Left) */}
-              <div className="feature-slide-text" style={{
-                flex: 1,
-                padding: 'clamp(2rem, 4vw, 4rem)',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                textAlign: 'left'
-              }}>
-                <div style={{
-                  width: 70, height: 70, borderRadius: 20,
-                  background: feature.bg,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: feature.color,
-                  marginBottom: '2rem',
-                }}>
-                  {feature.icon}
-                </div>
-
-                <div style={{
-                  fontSize: '0.72rem',
-                  fontWeight: 800,
-                  letterSpacing: '2px',
-                  textTransform: 'uppercase',
-                  color: feature.color,
-                  marginBottom: 12,
-                }}>
-                  {feature.tagline}
-                </div>
-
-                <h3 style={{
-                  fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)',
-                  fontWeight: 800,
-                  color: '#1B2559',
-                  margin: '0 0 1rem',
-                  lineHeight: 1.2
-                }}>
-                  {feature.title}
-                </h3>
-
-                <p style={{
-                  fontSize: '1.05rem',
-                  color: '#718EBF',
-                  lineHeight: 1.7,
-                  margin: 0,
-                  maxWidth: 420
-                }}>
-                  {feature.desc}
-                </p>
-              </div>
-
-              {/* Image Side (Right) - Pinterest aesthetic */}
-              <div className="feature-slide-image" style={{
-                flex: 1,
-                backgroundImage: `url(${feature.image})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'relative',
-              }}>
-                {/* Subtle gradient overlay to blend perfectly */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 25%)',
-                }} />
-              </div>
-            </div>
-
-            {/* Dots */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 10,
-              marginTop: '2rem',
-            }}>
-              {FEATURES.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goToSlide(i)}
-                  aria-label={`Go to feature ${i + 1}`}
-                  style={{
-                    width: currentSlide === i ? 32 : 10,
-                    height: 10,
-                    borderRadius: 100,
-                    border: 'none',
-                    background: currentSlide === i
-                      ? 'linear-gradient(135deg, #4318FF, #7B5FFF)'
-                      : 'rgba(67,24,255,0.15)',
-                    cursor: 'pointer',
-                    transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
-                    padding: 0,
-                  }}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 

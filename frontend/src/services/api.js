@@ -71,4 +71,10 @@ export const notificationService = {
   markAllAsRead: () => api.put('/api/notifications/read-all'),
 };
 
+// ================= FEEDBACK =================
+export const feedbackService = {
+  submitFeedback: (data) => api.post('/api/feedbacks', data),
+  getFeedbacks: () => api.get('/api/feedbacks'),
+};
+
 export default api;
