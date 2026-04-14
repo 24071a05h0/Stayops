@@ -2,10 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api, { notificationService } from '../services/api';
-import { Hexagon, LogOut, Bell, Sun, Cloud, CloudRain, Settings, User, ChevronDown, ClipboardList, CheckSquare } from 'lucide-react';
-import WeatherDetailModal from './WeatherDetailModal';
-
-const WEATHER_API_KEY = "32ef5d65b483dbd69240b2c97df19a93";
+import { Hexagon, LogOut, Bell, Sun, Cloud, CloudRain, Settings, User, ChevronDown, ClipboardList } from 'lucide-react';
 
 const ROLE_COLOR = {
   'Warden': '#f59e0b',
@@ -32,8 +29,6 @@ const Navbar = () => {
   const [searchedLocationName, setSearchedLocationName] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [isWeatherHovered, setIsWeatherHovered] = useState(false);
-  const [weatherCoords, setWeatherCoords] = useState({ lat: null, lon: null });
-  const [isWeatherDetailOpen, setIsWeatherDetailOpen] = useState(false);
   const weatherRef = useRef(null);
 
   useEffect(() => {
@@ -51,16 +46,11 @@ const Navbar = () => {
 
   const fetchWeather = async (lat, lon, locationName = 'Local') => {
     try {
-      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`);
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
       if (res.ok) {
         const data = await res.json();
-        setWeather({
-          temperature: data.main.temp,
-          weathercode: data.weather[0].id,
-          description: data.weather[0].description
-        });
+        setWeather(data.current_weather);
         setWeatherLocationName(locationName);
-        setWeatherCoords({ lat, lon });
       }
     } catch (err) {}
   };
@@ -82,22 +72,18 @@ const Navbar = () => {
     if (!searchQuery.trim()) return;
     setIsSearching(true);
     try {
-      const geoRes = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(searchQuery)}&limit=1&appid=${WEATHER_API_KEY}`);
+      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=1&language=en&format=json`);
       const geoData = await geoRes.json();
-      if (geoData && geoData.length > 0) {
-        const { lat, lon, name, state, country } = geoData[0];
-        const displayLocation = state ? `${name}, ${state}` : `${name}, ${country}`;
+      if (geoData.results && geoData.results.length > 0) {
+        const { latitude, longitude, name, admin1, country } = geoData.results[0];
+        const displayLocation = admin1 ? `${name}, ${admin1}` : `${name}, ${country}`;
         
-        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`);
+        // Fetch specific searched weather
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         if (res.ok) {
           const data = await res.json();
-          setSearchedWeather({
-            temperature: data.main.temp,
-            weathercode: data.weather[0].id,
-            description: data.weather[0].description
-          });
+          setSearchedWeather(data.current_weather);
           setSearchedLocationName(displayLocation);
-          setWeatherCoords({ lat, lon });
         }
       } else {
         alert('City not found');
@@ -128,11 +114,9 @@ const Navbar = () => {
 
   const roleColor = user ? (ROLE_COLOR[user.role] || '#4318FF') : '#4318FF';
 
-  const renderWeatherIcon = (id) => {
-    if (!id) return <Sun size={18} color="#f59e0b" />;
-    if (id === 800) return <Sun size={18} color="#f59e0b" />;
-    if (id >= 200 && id <= 531) return <CloudRain size={18} color="#3b82f6" />;
-    if (id >= 600 && id <= 622) return <Sun size={18} color="#A3BED9" />; // Snow icon could be better
+  const renderWeatherIcon = (code) => {
+    if (code === 0 || code === 1) return <Sun size={18} color="#f59e0b" />;
+    if (code >= 51 && code <= 99) return <CloudRain size={18} color="#3b82f6" />;
     return <Cloud size={18} color="#718EBF" />;
   };
 
@@ -213,17 +197,7 @@ const Navbar = () => {
                     <span style={{ fontWeight: 800, color: '#1B2559', fontSize: '0.95rem', lineHeight: '1.0', letterSpacing: '-0.5px' }}>
                       {weather ? `${Math.round(weather.temperature)}°` : '...'}
                     </span>
-                    <span
-                      onClick={(e) => { e.stopPropagation(); setIsWeatherDetailOpen(true); setIsWeatherOpen(false); }}
-                      style={{
-                        fontSize: '0.62rem', color: '#4318FF', maxWidth: '75px', whiteSpace: 'nowrap',
-                        overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 700, letterSpacing: '0.4px',
-                        textTransform: 'uppercase', marginTop: '2px', cursor: 'pointer',
-                        borderBottom: '1px dashed rgba(67,24,255,0.3)', paddingBottom: 1,
-                        transition: 'all 0.2s'
-                      }}
-                      title="Click for detailed weather analysis"
-                    >
+                    <span style={{ fontSize: '0.62rem', color: '#718EBF', maxWidth: '75px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase', marginTop: '2px' }}>
                       {weatherLocationName}
                     </span>
                   </div>
@@ -280,20 +254,6 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-
-              {/* Todo List Icon */}
-              <Link to="/workspace" title="To-Do & Notes" style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 38, height: 38, borderRadius: 10,
-                background: 'rgba(67,24,255,0.06)', border: '1px solid rgba(67,24,255,0.10)',
-                color: '#4318FF', textDecoration: 'none',
-                transition: 'all 0.3s ease', marginRight: 4
-              }}
-                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(67,24,255,0.12)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(67,24,255,0.15)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(67,24,255,0.06)'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
-              >
-                <CheckSquare size={18} strokeWidth={2.2} />
-              </Link>
 
               {/* Dashboard link */}
               <Link to="/dashboard" className="hide-on-mobile" style={{
@@ -396,6 +356,20 @@ const Navbar = () => {
                       >
                         <User size={16} color="#718EBF" /> View Profile
                       </button>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); navigate('/workspace'); }}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          width: '100%', padding: '10px 16px',
+                          background: 'transparent', border: 'none',
+                          color: '#1B2559', fontSize: '0.88rem', fontWeight: 500,
+                          cursor: 'pointer', transition: 'background 0.15s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(67,24,255,0.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <ClipboardList size={16} color="#718EBF" /> To-Do & Notes
+                      </button>
                     </div>
 
                     {/* Logout */}
@@ -422,15 +396,6 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-
-      {/* Weather Detail Modal */}
-      <WeatherDetailModal
-        isOpen={isWeatherDetailOpen}
-        onClose={() => setIsWeatherDetailOpen(false)}
-        cityName={weatherLocationName}
-        latitude={weatherCoords.lat}
-        longitude={weatherCoords.lon}
-      />
 
       {/* Dropdown animation style */}
       <style>{`

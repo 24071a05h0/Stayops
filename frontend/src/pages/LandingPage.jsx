@@ -225,7 +225,7 @@ const LandingPage = () => {
 
         <Container style={{ position: 'relative', zIndex: 2, maxWidth: 1100 }}>
           <Row className="align-items-center">
-
+            
             {/* HERO TEXT (LEFT ON DESKTOP) */}
             <Col lg={5} className="text-center text-lg-start mb-5 mb-lg-0">
               <div style={{
@@ -567,7 +567,7 @@ const LandingPage = () => {
               </div>
             </div>
           </Col>
-
+          
           {/* Resolution Doughnut */}
           <Col lg={4} md={6}>
             <div style={{
@@ -596,10 +596,10 @@ const LandingPage = () => {
               boxShadow: '0 12px 40px rgba(67,24,255,0.06)',
             }}>
               <h5 style={{ fontWeight: 700, color: '#1B2559', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <BarChart3 size={20} color="#f59e0b" /> Top Staff Performance
+                <BarChart3 size={20} color="#f59e0b" /> Top Staff Performance 
               </h5>
               <div style={{ height: 260 }}>
-                <Bar data={STAFF_PERFORMANCE_DATA} options={{ ...CHART_OPTIONS, maintainAspectRatio: false }} />
+                <Bar data={STAFF_PERFORMANCE_DATA} options={{...CHART_OPTIONS, maintainAspectRatio: false}} />
               </div>
             </div>
           </Col>
