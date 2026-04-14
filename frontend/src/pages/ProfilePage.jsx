@@ -111,7 +111,7 @@ const ProfilePage = () => {
   const roleGradient = formData.bannerColor ? formData.bannerColor : (ROLE_GRADIENT[user.role] || ROLE_GRADIENT['Staff']);
   const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U';
   const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A';
-  const profilePicUrl = user.profilePicture ? `${API_BASE}/${user.profilePicture}` : null;
+  const profilePicUrl = user.profilePicture ? `${API_BASE}/${user.profilePicture.replace(/\\/g, '/')}` : null;
 
   return (
     <div style={{ maxWidth: 960, margin: '2rem auto', padding: '0 1rem' }}>

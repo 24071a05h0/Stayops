@@ -263,25 +263,25 @@ const ComplaintTracker = () => {
             {complaint.image && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: 'var(--text-heading)' }}>📷 Issue Photo</div>
-                <img src={`http://localhost:5000/${complaint.image.replace(/\\/g, '/')}`} alt="Issue" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '1px solid var(--border-light)' }} className="img-fluid" />
+                <img src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${complaint.image.replace(/\\/g, '/')}`} alt="Issue" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '1px solid var(--border-light)' }} className="img-fluid" />
               </div>
             )}
             {complaint.resolutionImage && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: '#22c55e' }}>✅ Staff Resolution Photo</div>
-                <img src={`http://localhost:5000/${complaint.resolutionImage.replace(/\\/g, '/')}`} alt="Resolution" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #22c55e40' }} className="img-fluid" />
+                <img src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${complaint.resolutionImage.replace(/\\/g, '/')}`} alt="Resolution" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #22c55e40' }} className="img-fluid" />
               </div>
             )}
             {complaint.verifyImage && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: '#8b5cf6' }}>✔️ Student Confirmation Photo</div>
-                <img src={`http://localhost:5000/${complaint.verifyImage.replace(/\\/g, '/')}`} alt="Verify" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #8b5cf640' }} className="img-fluid" />
+                <img src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${complaint.verifyImage.replace(/\\/g, '/')}`} alt="Verify" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #8b5cf640' }} className="img-fluid" />
               </div>
             )}
             {complaint.reopenImage && (
               <div className="mt-4 pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                 <div className="small fw-bold mb-2" style={{ color: '#ef4444' }}>⚠️ Problem Continues Photo</div>
-                <img src={`http://localhost:5000/${complaint.reopenImage.replace(/\\/g, '/')}`} alt="Reopen" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #ef444440' }} className="img-fluid" />
+                <img src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${complaint.reopenImage.replace(/\\/g, '/')}`} alt="Reopen" style={{ maxHeight: 180, objectFit: 'cover', borderRadius: 10, border: '2px solid #ef444440' }} className="img-fluid" />
               </div>
             )}
           </div>

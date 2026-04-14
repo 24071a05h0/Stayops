@@ -302,14 +302,19 @@ const Navbar = () => {
                   {/* Avatar circle */}
                   <div style={{
                     width: 36, height: 36, borderRadius: '50%',
-                    background: user?.bannerColor || `linear-gradient(135deg, ${roleColor}, ${roleColor}88)`,
+                    background: user?.profilePicture ? 'transparent' : (user?.bannerColor || `linear-gradient(135deg, ${roleColor}, ${roleColor}88)`),
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: '#fff', fontWeight: 800, fontSize: '0.85rem',
                     letterSpacing: '0.5px',
                     boxShadow: `0 2px 8px ${roleColor}40`,
-                    flexShrink: 0
+                    flexShrink: 0,
+                    overflow: 'hidden'
                   }}>
-                    {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U'}
+                    {user?.profilePicture ? (
+                      <img src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${user.profilePicture.replace(/\\/g, '/')}`} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : 'U'
+                    )}
                   </div>
                   <div className="hide-on-mobile" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
                     <span style={{ fontWeight: 700, fontSize: '0.88rem', color: '#1B2559', whiteSpace: 'nowrap' }}>{user.name}</span>

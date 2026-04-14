@@ -202,10 +202,20 @@ const StudentDashboard = () => {
                     </div>
                   </div>
                   <Card.Title className="fs-6 mt-2 fw-bold text-truncate" style={{ color: 'var(--text-heading)' }}>{c.title}</Card.Title>
-                  <Card.Text className="small mb-4 flex-grow-1" style={{ color: 'var(--text-body)' }}>
+                  <Card.Text className="small mb-3 flex-grow-1" style={{ color: 'var(--text-body)' }}>
                     {c.description}
                   </Card.Text>
                   
+                  {c.image && (
+                    <div className="mb-3" style={{ height: '120px', borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+                      <img 
+                        src={`${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'}/${c.image.replace(/\\/g, '/')}`} 
+                        alt="Issue" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
+                    </div>
+                  )}
+
                   <div className="mt-auto pt-3" style={{ borderTop: '1px solid var(--border-light)' }}>
                     <div className="d-flex justify-content-between align-items-center">
                       <div className="small" style={{ color: 'var(--text-muted)' }}>
