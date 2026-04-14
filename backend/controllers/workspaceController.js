@@ -13,13 +13,10 @@ export const getTodos = async (req, res) => {
 
 export const createTodo = async (req, res) => {
   try {
-    const { task, description, priority, category, repairCost } = req.body;
+    const { task, repairCost } = req.body;
     const todo = await Todo.create({
       user: req.user._id,
       task,
-      description: description || '',
-      priority: priority || 'Medium',
-      category: category || 'Personal',
       repairCost: req.user.role === 'Warden' ? (Number(repairCost) || 0) : 0
     });
     res.status(201).json(todo);
