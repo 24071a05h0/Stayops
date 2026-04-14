@@ -6,9 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="StayOps — Smart Hostel Operations & Grievance Management System" />
     <title>StayOps</title>
+
+    <style>
+      body {
+        margin: 0;
+      }
+
+      #loader {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #ddd;
+        border-top: 5px solid #4CAF50;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </head>
+
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="loader">
+        <div class="spinner"></div>
+        <h2>StayOps</h2>
+        <p>Loading your dashboard...</p>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
